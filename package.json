@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "rentfusion",
   "private": true,
   "scripts": {
     "build": "turbo run build",
