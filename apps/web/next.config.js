@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Disable output file tracing to fix ENOENT errors on Vercel
+  outputFileTracing: false,
+  
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
