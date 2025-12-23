@@ -1,0 +1,13 @@
+node_modules
+.next
+.turbo
+dist
+build
+coverage
+*.config.js
+*.config.ts
+public
+.expo
+android
+ios
+
