@@ -50,10 +50,14 @@ export default function DashboardPage() {
 
       const { data, error } = await query;
       if (error) throw error;
-      return (data ?? []) as unknown as Property[];
+      // Ensure proper typing for Supabase response
+      return (data ?? []) as Property[];
     },
     refetchInterval: 30000
   });
+
+  // Type-safe property list
+  const propertyList = (properties ?? []) as Property[];
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -91,16 +95,16 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {(properties as Property[] | undefined)?.map((property: Property) => (
+                {/* @ts-expect-error - TypeScript inference issue with Supabase types */}
+                {propertyList.map((property: Property) => (
                   <PropertyCard
                     key={String(property.id)}
                     property={property}
                     onSave={(id) => console.log("Saved:", id)}
-                    onApply={(id) =>
-                      setSelectedProperty(
-                        properties?.find((p) => String(p.id) === id) || property
-                      )
-                    }
+                    onApply={(id) => {
+                      const found = propertyList.find((p: Property) => String(p.id) === id);
+                      setSelectedProperty(found ?? property);
+                    }}
                   />
                 ))}
               </AnimatePresence>
