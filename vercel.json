@@ -2,7 +2,8 @@
   "framework": "nextjs",
   "buildCommand": "pnpm turbo run build --filter=@rentfusion/web",
   "installCommand": "pnpm install",
-  "devCommand": "cd apps/web && pnpm dev",
+  "devCommand": "pnpm dev",
+  "rootDirectory": "apps/web",
   "rewrites": [
     {
       "source": "/api/:path*",
