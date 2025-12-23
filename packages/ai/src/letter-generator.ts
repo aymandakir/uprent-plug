@@ -1,12 +1,6 @@
 import OpenAI from "openai";
 import { z } from "zod";
 
-// Initialize OpenAI with a dummy key for build-time safety
-// Will be validated at runtime in generateApplicationLetter
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "dummy-key-for-build"
-});
-
 // Input validation schema
 export const LetterInputSchema = z.object({
   // User info
