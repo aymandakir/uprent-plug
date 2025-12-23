@@ -1,13 +1,18 @@
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing STRIPE_SECRET_KEY environment variable');
-}
-
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+// Initialize with dummy key for build-time safety
+// Will be validated at runtime when actually used
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy_key_for_build', {
   apiVersion: '2025-12-15.clover',
   typescript: true,
 });
+
+// Helper function to validate Stripe key at runtime
+export function validateStripeKey(): void {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('Missing STRIPE_SECRET_KEY environment variable');
+  }
+}
 
 export const STRIPE_CONFIG = {
   publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,

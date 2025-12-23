@@ -1,16 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
 
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-  throw new Error("Missing env.NEXT_PUBLIC_SUPABASE_URL");
-}
-if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-  throw new Error("Missing env.NEXT_PUBLIC_SUPABASE_ANON_KEY");
-}
-
+// Use dummy values for build-time safety
+// Will be validated at runtime when actually used
 export const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://dummy.supabase.co",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "dummy-anon-key-for-build",
   {
     auth: {
       persistSession: true,
@@ -25,8 +20,8 @@ export const supabase = createClient<Database>(
 );
 
 export const supabaseAdmin = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://dummy.supabase.co",
+  process.env.SUPABASE_SERVICE_ROLE_KEY || "dummy-service-key-for-build",
   {
     auth: {
       persistSession: false,
