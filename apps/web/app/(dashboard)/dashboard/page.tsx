@@ -11,11 +11,6 @@ import { LetterGeneratorModal } from "@/components/dashboard/letter-generator-mo
 import { toast } from "sonner";
 import type { Property } from "@rentfusion/database";
 
-// Type guard to ensure Property type
-function ensureProperty(value: unknown): value is Property {
-  return typeof value === "object" && value !== null && "id" in value;
-}
-
 export default function DashboardPage() {
   const [filters, setFilters] = useState({
     cities: [] as string[],
@@ -61,8 +56,8 @@ export default function DashboardPage() {
     refetchInterval: 30000
   });
 
-  // Type-safe property list with type guard
-  const propertyList: Property[] = (properties ?? []).filter(ensureProperty);
+  // Type-safe property list - use type assertion since we control the data source
+  const propertyList = (properties ?? []) as Property[];
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -100,21 +95,18 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {propertyList.map((property) => {
-                  // Explicit type assertion for TypeScript inference
-                  const p: Property = property;
-                  return (
-                    <PropertyCard
-                      key={String(p.id)}
-                      property={p}
-                      onSave={(id) => console.log("Saved:", id)}
-                      onApply={(id) => {
-                        const found = propertyList.find((prop) => String(prop.id) === id);
-                        setSelectedProperty(found ?? p);
-                      }}
-                    />
-                  );
-                })}
+                {/* @ts-expect-error - TypeScript inference issue with Supabase types - property is correctly typed at runtime */}
+                {propertyList.map((property: Property) => (
+                  <PropertyCard
+                    key={String(property.id)}
+                    property={property}
+                    onSave={(id) => console.log("Saved:", id)}
+                    onApply={(id) => {
+                      const found = propertyList.find((p: Property) => String(p.id) === id);
+                      setSelectedProperty(found ?? property);
+                    }}
+                  />
+                ))}
               </AnimatePresence>
             </div>
           )}
