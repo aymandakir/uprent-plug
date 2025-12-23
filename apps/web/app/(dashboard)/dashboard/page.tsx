@@ -100,17 +100,21 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {propertyList.map((property) => (
-                  <PropertyCard
-                    key={String(property.id)}
-                    property={property}
-                    onSave={(id) => console.log("Saved:", id)}
-                    onApply={(id) => {
-                      const found = propertyList.find((p) => String(p.id) === id);
-                      setSelectedProperty(found ?? property);
-                    }}
-                  />
-                ))}
+                {propertyList.map((property) => {
+                  // Explicit type assertion for TypeScript inference
+                  const p: Property = property;
+                  return (
+                    <PropertyCard
+                      key={String(p.id)}
+                      property={p}
+                      onSave={(id) => console.log("Saved:", id)}
+                      onApply={(id) => {
+                        const found = propertyList.find((prop) => String(prop.id) === id);
+                        setSelectedProperty(found ?? p);
+                      }}
+                    />
+                  );
+                })}
               </AnimatePresence>
             </div>
           )}
