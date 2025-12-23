@@ -1,5 +1,6 @@
 export { supabase, supabaseAdmin } from "./client";
-export type { Database } from "./database.types";
+import type { Database } from "./database.types";
+export type { Database };
 export type User = Database["public"]["Tables"]["users"]["Row"];
 export type SearchProfile = Database["public"]["Tables"]["search_profiles"]["Row"];
 export type Property = Database["public"]["Tables"]["properties"]["Row"];
