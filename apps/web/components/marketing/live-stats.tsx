@@ -1,9 +1,11 @@
+"use client";
+
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
-// Use a wrapper component to isolate the client component
-const LiveStatsWrapper = dynamic(
-  () => import("./live-stats-wrapper"),
+// Dynamically import SocialProofDashboard to avoid build-time clientModules error
+const SocialProofDashboard = dynamic(
+  () => import("@/components/trust-builder/SocialProofDashboard"),
   { 
     ssr: false,
     loading: () => <div className="h-96 animate-pulse rounded-3xl bg-gray-100" />
