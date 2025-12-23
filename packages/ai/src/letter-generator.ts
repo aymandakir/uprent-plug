@@ -179,5 +179,11 @@ function buildUserPrompt(input: LetterInput): string {
   return lines;
 }
 
-export { openai };
+// Export a function to get OpenAI client (for backward compatibility)
+export function getOpenAIClient(): OpenAI {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error("Missing OPENAI_API_KEY environment variable");
+  }
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
