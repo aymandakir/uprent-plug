@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd ../.. && pnpm install && pnpm turbo run build --filter=@rentfusion/web",
+  "devCommand": "cd ../.. && pnpm turbo run dev --filter=@rentfusion/web",
+  "installCommand": "cd ../.. && pnpm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next"
+}
+
