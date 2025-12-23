@@ -39,8 +39,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy Web App
-        uses: amondnet/vercel-action@v25
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -55,10 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy Scraper to Railway
-        uses: bervProject/railway-deploy@main
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+      - name: Deploy to Railway
+        run: railway up --service scraper --detach
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        with:
-          service: scraper
 
