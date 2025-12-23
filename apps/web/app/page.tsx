@@ -5,10 +5,10 @@ import { Testimonials } from "@/components/marketing/testimonials";
 import { PricingSection } from "@/components/marketing/pricing-section";
 import { FAQ } from "@/components/marketing/faq";
 import { CTA } from "@/components/marketing/cta";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 
 // Only dynamically import LiveStats which uses Trust Builder components
-const LiveStats = dynamic(
+const LiveStats = nextDynamic(
   () => import("@/components/marketing/live-stats").then((mod) => ({ default: mod.LiveStats })),
   { 
     ssr: false,
