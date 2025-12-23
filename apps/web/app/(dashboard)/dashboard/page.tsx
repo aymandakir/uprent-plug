@@ -95,7 +95,6 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {/* @ts-expect-error - TypeScript inference issue with Supabase types - property is correctly typed at runtime */}
                 {propertyList.map((property: Property) => (
                   <PropertyCard
                     key={String(property.id)}
