@@ -78,13 +78,13 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   console.log(`[Webhook] Checkout completed for user ${userId}`);
 
-  // Update user subscription status
-  await supabaseAdmin
-    .from('users')
-    .update({
-      stripe_customer_id: session.customer as string,
-    })
-    .eq('id', userId);
+    // Update user subscription status
+    await (supabaseAdmin as any)
+      .from('users')
+      .update({
+        stripe_customer_id: session.customer as string,
+      })
+      .eq('id', userId);
 }
 
 async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
@@ -100,7 +100,8 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
       .single();
 
     if (!user) return;
-    targetUserId = user.id;
+    type UserData = { id: string };
+    targetUserId = (user as UserData).id;
   }
 
   // Determine tier from price ID
@@ -115,14 +116,17 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
 
   console.log(`[Webhook] Subscription updated: ${targetUserId} → ${tier}`);
 
-  // Update user in database
-  await supabaseAdmin
-    .from('users')
-    .update({
-      subscription_tier: tier,
-      subscription_ends_at: new Date(subscription.current_period_end * 1000).toISOString(),
-    })
-    .eq('id', targetUserId);
+    // Update user in database
+    const periodEnd = (subscription as any).current_period_end;
+    await (supabaseAdmin as any)
+      .from('users')
+      .update({
+        subscription_tier: tier,
+        subscription_ends_at: periodEnd 
+          ? new Date(periodEnd * 1000).toISOString()
+          : null,
+      })
+      .eq('id', targetUserId);
 }
 
 async function handleSubscriptionCanceled(subscription: Stripe.Subscription) {
@@ -133,19 +137,20 @@ async function handleSubscriptionCanceled(subscription: Stripe.Subscription) {
     .eq('stripe_customer_id', subscription.customer as string)
     .single();
 
-  const targetUserId = userId || user?.id;
+  type UserData = { id: string };
+  const targetUserId = userId || (user as UserData | null)?.id;
   if (!targetUserId) return;
 
   console.log(`[Webhook] Subscription canceled: ${targetUserId}`);
 
-  // Downgrade to free tier
-  await supabaseAdmin
-    .from('users')
-    .update({
-      subscription_tier: 'free',
-      subscription_ends_at: null,
-    })
-    .eq('id', targetUserId);
+    // Downgrade to free tier
+    await (supabaseAdmin as any)
+      .from('users')
+      .update({
+        subscription_tier: 'free',
+        subscription_ends_at: null,
+      })
+      .eq('id', targetUserId);
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
@@ -153,20 +158,21 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   // Optional: Send receipt email
 }
 
-async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  console.log(`[Webhook] Payment failed: ${invoice.customer}`);
-  // Send payment failure notification
-  const { data: user } = await supabaseAdmin
-    .from('users')
-    .select('email')
-    .eq('stripe_customer_id', invoice.customer as string)
-    .single();
+  async function handlePaymentFailed(invoice: Stripe.Invoice) {
+    console.log(`[Webhook] Payment failed: ${invoice.customer}`);
+    // Send payment failure notification
+    const { data: user } = await supabaseAdmin
+      .from('users')
+      .select('email')
+      .eq('stripe_customer_id', invoice.customer as string)
+      .single();
 
-  if (user) {
-    // TODO: Send email via Resend
-    console.log(`Send payment failure email to ${user.email}`);
+    if (user) {
+      type UserData = { email: string };
+      // TODO: Send email via Resend
+      console.log(`Send payment failure email to ${(user as UserData).email}`);
+    }
   }
-}
 
 export const runtime = 'nodejs';
 

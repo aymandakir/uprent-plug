@@ -41,7 +41,7 @@ export function PropertyCard({ property, onSave, onApply }: PropertyCardProps) {
             />
             {property.photos.length > 1 && (
               <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1">
-                {property.photos.map((_, idx) => (
+                {property.photos.map((_: string, idx: number) => (
                   <button
                     key={idx}
                     onClick={(e) => {

@@ -23,9 +23,9 @@ export default function DashboardPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
-  const { data: properties, isLoading } = useQuery({
+  const { data: properties, isLoading } = useQuery<Property[]>({
     queryKey: ["properties", filters],
-    queryFn: async () => {
+    queryFn: async (): Promise<Property[]> => {
       let query = supabase
         .from("properties")
         .select("*")
@@ -50,7 +50,7 @@ export default function DashboardPage() {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as unknown as Property[];
     },
     refetchInterval: 30000
   });
@@ -91,15 +91,14 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {properties?.map((property) => (
+                {(properties as Property[] | undefined)?.map((property: Property) => (
                   <PropertyCard
-                    key={property.id as unknown as string}
-                    property={property as any}
+                    key={String(property.id)}
+                    property={property}
                     onSave={(id) => console.log("Saved:", id)}
                     onApply={(id) =>
                       setSelectedProperty(
-                        (properties as unknown as Property[] | undefined)?.find((p) => p.id === id) ||
-                          (property as unknown as Property)
+                        properties?.find((p) => String(p.id) === id) || property
                       )
                     }
                   />

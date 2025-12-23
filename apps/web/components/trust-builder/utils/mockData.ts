@@ -41,7 +41,11 @@ const eventTypes: BookingEvent["type"][] = [
 ];
 
 function randomFrom<T>(list: T[]): T {
-  return list[Math.floor(Math.random() * list.length)];
+  const item = list[Math.floor(Math.random() * list.length)];
+  if (item === undefined) {
+    throw new Error('Cannot select from empty list');
+  }
+  return item;
 }
 
 function randomTimestamp(): string {

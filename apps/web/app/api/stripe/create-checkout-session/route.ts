@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe, STRIPE_CONFIG } from '@/lib/stripe/config';
+import { stripe } from '@/lib/stripe/config';
 import { supabaseAdmin } from '@rentfusion/database';
 
 export async function POST(req: NextRequest) {
@@ -27,12 +27,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let customerId = user.stripe_customer_id;
+    type UserData = { email: string; stripe_customer_id: string | null };
+    const userData = user as UserData;
+    let customerId = userData.stripe_customer_id;
 
     // Create Stripe customer if doesn't exist
     if (!customerId) {
       const customer = await stripe.customers.create({
-        email: user.email,
+        email: userData.email,
         metadata: {
           userId,
         },
@@ -41,7 +43,7 @@ export async function POST(req: NextRequest) {
       customerId = customer.id;
 
       // Save customer ID to database
-      await supabaseAdmin
+      await (supabaseAdmin as any)
         .from('users')
         .update({ stripe_customer_id: customerId })
         .eq('id', userId);

@@ -26,12 +26,12 @@ export function NotificationSettings({ userId }: { userId: string }) {
     setChannels(newChannels);
 
     try {
-      await supabase
+      await (supabase as any)
         .from("search_profiles")
         .update({
           notification_channels: Object.entries(newChannels)
-            .filter(([, enabled]) => enabled)
-            .map(([ch]) => ch)
+            .filter(([, enabled]: [string, boolean]) => enabled)
+            .map(([ch]: [string, boolean]) => ch)
         })
         .eq("user_id", userId);
 

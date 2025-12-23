@@ -63,10 +63,11 @@ export default function LiveActivityFeed({
   }, [events, useLiveData]);
 
   const cycle = useCallback(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || pool.length === 0) return;
     setItems((current) => {
       const nextEvent = pool[cursor % pool.length];
-      const nextList = [...current.slice(1), nextEvent];
+      if (!nextEvent) return current;
+      const nextList: BookingEvent[] = [...current.slice(1), nextEvent];
       return nextList;
     });
     setCursor((c) => (c + 1) % pool.length);

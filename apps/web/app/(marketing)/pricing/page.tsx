@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Zap } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PRICING_TIERS } from '@/lib/stripe/config';
 import { useRouter } from 'next/navigation';
@@ -32,12 +32,15 @@ export default function PricingPage() {
         }),
       });
 
-      const { url, error } = await res.json();
+      const data = await res.json() as { url?: string; error?: string };
+      const { url, error } = data;
 
       if (error) throw new Error(error);
 
       // Redirect to Stripe Checkout
-      window.location.href = url;
+      if (url && typeof window !== 'undefined') {
+        window.location.href = url;
+      }
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error('Failed to start checkout');

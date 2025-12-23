@@ -36,8 +36,10 @@ export function SubscriptionCard({ userId }: { userId: string }) {
 
   if (!user) return null;
 
-  const tier = user.subscription_tier || 'free';
-  const endsAt = user.subscription_ends_at ? new Date(user.subscription_ends_at) : null;
+  type UserData = { subscription_tier: string | null; subscription_ends_at: string | null };
+  const userData = user as UserData;
+  const tier = userData.subscription_tier || 'free';
+  const endsAt = userData.subscription_ends_at ? new Date(userData.subscription_ends_at) : null;
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-6">

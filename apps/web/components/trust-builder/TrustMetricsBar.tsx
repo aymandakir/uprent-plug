@@ -4,7 +4,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Calendar, Home, Star, TrendingUp } from "lucide-react";
 import clsx from "clsx";
-import { metricVariants, iconPulse, easeOutExpo } from "./utils/animations";
+import { metricVariants, iconPulse } from "./utils/animations";
 import PropTypes from "prop-types";
 
 type MetricKey = "homesFound" | "viewingsBooked" | "successRate" | "trustpilot";

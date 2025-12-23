@@ -111,7 +111,11 @@ export default function SocialProofDashboard({
   useEffect(() => {
     if (!autoRefresh) return;
     const id = setInterval(() => {
-      setEvents((prev) => [...prev.slice(1), prev[0]]);
+      setEvents((prev) => {
+        const first = prev[0];
+        if (!first) return prev;
+        return [...prev.slice(1), first];
+      });
     }, 15000);
     return () => clearInterval(id);
   }, [autoRefresh]);
@@ -185,7 +189,7 @@ export default function SocialProofDashboard({
             initialValues={
               counters.data
                 ? {
-                    homesFound: Math.max(0, counters.data.lastHour ?? 0) + 1000,
+                    homesFound: Math.max(0, ((counters.data as any)?.lastHour ?? 0)) + 1000,
                     viewingsBooked: 327,
                     successRate: 94,
                     trustpilot: 4.7

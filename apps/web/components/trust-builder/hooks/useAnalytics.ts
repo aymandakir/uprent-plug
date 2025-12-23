@@ -70,19 +70,23 @@ export function useAnalytics(providers: Provider[] = ["ga4", "plausible"]) {
 
 export function useABTest(variants: string[], flagKey = "trust-builder-variant") {
   const [variant, setVariant] = useState<string>(() => {
-    if (typeof window === "undefined") return variants[0];
+    if (typeof window === "undefined") return variants[0] ?? "";
     const stored = window.localStorage.getItem(flagKey);
     if (stored && variants.includes(stored)) return stored;
-    const chosen = variants[Math.floor(Math.random() * variants.length)];
-    window.localStorage.setItem(flagKey, chosen);
+    const chosen = variants[Math.floor(Math.random() * variants.length)] ?? variants[0] ?? "";
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(flagKey, chosen);
+    }
     return chosen;
   });
 
   useEffect(() => {
     if (!variants.includes(variant)) {
-      const next = variants[0];
+      const next = variants[0] ?? "";
       setVariant(next);
-      window.localStorage.setItem(flagKey, next);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(flagKey, next);
+      }
     }
   }, [variant, variants, flagKey]);
 
