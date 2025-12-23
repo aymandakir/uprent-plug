@@ -1,12 +1,10 @@
 import OpenAI from "openai";
 import { z } from "zod";
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("Missing OPENAI_API_KEY environment variable");
-}
-
+// Initialize OpenAI with a dummy key for build-time safety
+// Will be validated at runtime in generateApplicationLetter
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY || "dummy-key-for-build"
 });
 
 // Input validation schema
@@ -49,13 +47,23 @@ export interface GeneratedLetter {
 }
 
 export async function generateApplicationLetter(input: LetterInput): Promise<GeneratedLetter> {
+  // Check at runtime, not build time
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error("Missing OPENAI_API_KEY environment variable");
+  }
+
   const validatedInput = LetterInputSchema.parse(input);
 
   const systemPrompt = buildSystemPrompt(validatedInput);
   const userPrompt = buildUserPrompt(validatedInput);
 
+  // Re-initialize with actual key at runtime
+  const openaiClient = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+  });
+
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await openaiClient.chat.completions.create({
       model: "gpt-4-turbo-preview",
       messages: [
         { role: "system", content: systemPrompt },
