@@ -23,13 +23,39 @@ export default function HomePage() {
       });
     }, observerOptions);
 
-    const elements = [
-      featuresRef.current?.children,
-      useCasesRef.current?.children,
-      statsRef.current?.children,
-    ].flat().filter(Boolean) as Element[];
+    // Collect all elements to observe
+    const elements: Element[] = [];
+    
+    if (featuresRef.current) {
+      Array.from(featuresRef.current.children).forEach((child) => {
+        if (child instanceof Element) {
+          elements.push(child);
+        }
+      });
+    }
+    
+    if (useCasesRef.current) {
+      Array.from(useCasesRef.current.children).forEach((child) => {
+        if (child instanceof Element) {
+          elements.push(child);
+        }
+      });
+    }
+    
+    if (statsRef.current) {
+      Array.from(statsRef.current.children).forEach((child) => {
+        if (child instanceof Element) {
+          elements.push(child);
+        }
+      });
+    }
 
-    elements.forEach((el) => observer.observe(el));
+    // Observe all valid elements
+    elements.forEach((el) => {
+      if (el instanceof Element) {
+        observer.observe(el);
+      }
+    });
 
     return () => observer.disconnect();
   }, []);
