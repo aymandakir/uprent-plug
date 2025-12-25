@@ -3,7 +3,10 @@ node_modules/
 .turbo/
 dist/
 build/
-.env*.local
+# Environment variables (NEVER COMMIT THESE!)
+**/.env
+**/.env.*
+!**/.env.example
 .DS_Store
 *.log
 coverage/
