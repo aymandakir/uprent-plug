@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy initialize OpenAI client to avoid build-time errors
+function getOpenAIClient() {
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY environment variable is not set');
+  }
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+}
 
 const CONTRACT_ANALYSIS_SYSTEM_PROMPT = `You are an expert Dutch rental law attorney with 20+ years of experience reviewing residential rental contracts. Your role is to analyze contracts for potential issues, unfair terms, and legal compliance.
 
