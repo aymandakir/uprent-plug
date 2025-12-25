@@ -147,6 +147,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Analyze with GPT-4
+    const openai = getOpenAIClient();
     const completion = await openai.chat.completions.create({
       model: 'gpt-4-turbo-preview',
       messages: [
