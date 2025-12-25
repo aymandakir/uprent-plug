@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer base {
   :root {
     --radius: 0.5rem;
     --background: 255 255 255;

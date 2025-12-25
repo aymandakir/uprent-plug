@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@rentfusion/database": "workspace:*",
+    "@supabase/supabase-js": "^2.39.0",
     "axios": "^1.7.9",
     "bullmq": "^5.28.2",
     "cheerio": "^1.0.0",
@@ -19,6 +20,7 @@
     "openai": "^4.67.3",
     "p-queue": "^8.0.1",
     "puppeteer": "^23.7.1",
+    "resend": "^3.0.0",
     "sharp": "^0.33.5",
     "zod": "^3.23.8"
   },

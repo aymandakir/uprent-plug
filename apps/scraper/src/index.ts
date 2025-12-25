@@ -1,83 +1,72 @@
-import "dotenv/config";
-import { FundaScraper } from "./scrapers/funda";
-import { ParariusScraper } from "./scrapers/pararius";
-import { Queue, Worker } from "bullmq";
-import IORedis from "ioredis";
+import { supabase } from './lib/supabase';
+import { FundaScraper } from './scrapers/funda-scraper';
+import { findMatches } from './matcher';
+import { sendNotifications } from './notifier';
 
-const connection = new IORedis({
-  host: process.env.REDIS_HOST || "localhost",
-  port: parseInt(process.env.REDIS_PORT || "6379", 10),
-  maxRetriesPerRequest: null
-});
+async function main() {
+  console.log('[Scraper] Starting...');
+  
+  const scraper = new FundaScraper();
+  
+  // For MVP, scrape these cities
+  const cities = ['amsterdam', 'rotterdam', 'utrecht', 'den-haag'];
+  
+  try {
+    // Scrape properties
+    const properties = await scraper.scrape(cities);
+    console.log(`[Scraper] Found ${properties.length} properties`);
+    
+    let newCount = 0;
+    let updatedCount = 0;
+    
+    // Insert into database
+    for (const prop of properties) {
+      const { data, error } = await supabase.rpc('upsert_property', {
+        p_source: prop.source,
+        p_external_id: prop.externalId,
+        p_url: prop.url,
+        p_title: prop.title,
+        p_city: prop.city,
+        p_price: prop.price,
+        p_bedrooms: prop.bedrooms,
+        p_area_sqm: prop.areaSqm,
+        p_furnished: prop.furnished,
+        p_description: prop.description,
+        p_photos: prop.photos,
+        p_available_from: prop.availableFrom,
+        p_landlord_name: prop.landlordName,
+        p_landlord_email: prop.landlordEmail,
+      });
 
-const scrapingQueue = new Queue("scraping-jobs", { connection });
+      if (error) {
+        console.error('[Scraper] Error upserting property:', error);
+        continue;
+      }
 
-const scrapers = {
-  funda: new FundaScraper(),
-  pararius: new ParariusScraper()
-};
-
-const worker = new Worker(
-  "scraping-jobs",
-  async (job) => {
-    const { scraper, city, maxPages } = job.data;
-
-    console.log(`[Worker] Processing ${scraper} for ${city}`);
-
-    const scraperInstance = scrapers[scraper as keyof typeof scrapers];
-    if (!scraperInstance) {
-      throw new Error(`Unknown scraper: ${scraper}`);
+      const propertyId = data;
+      
+      // Find matches for this property
+      const matches = await findMatches(propertyId);
+      
+      // Send notifications for each match
+      for (const match of matches) {
+        await sendNotifications(match.id);
+      }
+      
+      newCount++;
     }
-
-    const listings = await scraperInstance.scrapeListings({ city, maxPages });
-
-    let savedCount = 0;
-    for (const listing of listings) {
-      const id = await scraperInstance.saveListing(listing);
-      if (id) savedCount++;
-    }
-
-    console.log(`[Worker] ${scraper}: Found ${listings.length}, saved ${savedCount}`);
-
-    return { found: listings.length, saved: savedCount };
-  },
-  { connection, concurrency: 2 }
-);
-
-worker.on("completed", (job) => {
-  console.log(`[Queue] Job ${job.id} completed:`, job.returnvalue);
-});
-
-worker.on("failed", (job, err) => {
-  console.error(`[Queue] Job ${job?.id} failed:`, err);
-});
-
-async function scheduleJobs() {
-  const cities = ["amsterdam", "rotterdam", "utrecht", "den-haag", "eindhoven"];
-
-  for (const scraper of Object.keys(scrapers)) {
-    for (const city of cities) {
-      await scrapingQueue.add(
-        `${scraper}-${city}`,
-        { scraper, city, maxPages: 3 },
-        {
-          repeat: {
-            every: 15 * 60 * 1000
-          },
-          attempts: 3,
-          backoff: {
-            type: "exponential",
-            delay: 5000
-          }
-        }
-      );
-    }
+    
+    console.log(`[Scraper] Finished. New: ${newCount}, Updated: ${updatedCount}`);
+  } catch (error) {
+    console.error('[Scraper] Fatal error:', error);
+    throw error;
   }
-
-  console.log("[Scheduler] Jobs scheduled for all cities");
 }
 
-scheduleJobs().catch(console.error);
+// Execute main function (tsx will run this file directly)
+main().catch((error) => {
+  console.error('[Scraper] Unhandled error:', error);
+  process.exit(1);
+});
 
-console.log("[Scraper] Service started. Listening for jobs...");
-
+export { main };
