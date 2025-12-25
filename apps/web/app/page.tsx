@@ -11,11 +11,13 @@ import { PricingSection } from '@/components/landing/pricing-section';
 import { FAQSection } from '@/components/landing/faq-section';
 import { FinalCTA } from '@/components/landing/final-cta';
 import { Footer } from '@/components/landing/footer';
+import { getTranslation } from '@/lib/translations';
+
+const t = getTranslation('en');
 
 export const metadata: Metadata = {
-  title: 'RentFusion - Find Your Dutch Rental in 15 Seconds',
-  description:
-    'AI-powered rental alerts for 1,500+ sources. Never miss a listing again. Trusted by 10,000+ renters in the Netherlands.',
+  title: t.metadata.title,
+  description: t.metadata.description,
   keywords: [
     'rental',
     'housing',
@@ -27,20 +29,19 @@ export const metadata: Metadata = {
     'rental alerts',
     'Dutch housing',
   ],
-  authors: [{ name: 'RentFusion' }],
+  authors: [{ name: 'Uprent Plus' }],
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://rentfusion.nl',
-    title: 'RentFusion - Find Your Dutch Rental in 15 Seconds',
-    description:
-      'AI-powered alerts for 1,500+ sources. Never miss a listing again. Trusted by 10,000+ renters.',
-    siteName: 'RentFusion',
+    url: 'https://uprent.nl',
+    title: t.metadata.title,
+    description: t.metadata.description,
+    siteName: 'Uprent Plus',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'RentFusion - Find Your Dutch Rental Fast',
-    description: 'AI-powered rental alerts. 15-second notifications. 1,500+ sources.',
+    title: t.metadata.title,
+    description: t.metadata.description,
   },
   robots: {
     index: true,
@@ -53,24 +54,24 @@ export default function LandingPage() {
     <div className="min-h-screen">
       <Navbar />
       <main>
-        <HeroSection />
-        <LogoBar />
-        <KeyBenefits />
-        <InteractiveDemo />
-        <UseCases />
-        <SocialProof />
+        <HeroSection translations={t.hero} />
+        <LogoBar translations={t.logoBar} />
+        <KeyBenefits translations={t.keyBenefits} />
+        <InteractiveDemo translations={t.interactiveDemo} />
+        <UseCases translations={t.useCases} />
+        <SocialProof translations={t.socialProof} />
         <div id="features">
-          <FeaturesGrid />
+          <FeaturesGrid translations={t.features} />
         </div>
         <div id="pricing">
-          <PricingSection />
+          <PricingSection translations={t.pricing} />
         </div>
         <div id="faq">
-          <FAQSection />
+          <FAQSection translations={t.faq} />
         </div>
-        <FinalCTA />
+        <FinalCTA translations={t.finalCta} />
       </main>
-      <Footer />
+      <Footer translations={t.footer} />
     </div>
   );
 }

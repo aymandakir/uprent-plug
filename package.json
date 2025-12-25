@@ -1,5 +1,5 @@
 {
-  "name": "rentfusion",
+  "name": "uprent-plus",
   "private": true,
   "scripts": {
     "dev": "turbo run dev",

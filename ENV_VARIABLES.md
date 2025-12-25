@@ -53,7 +53,7 @@ OPENAI_API_KEY=sk-xxx
 ```bash
 NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 # Or with custom domain:
-# NEXT_PUBLIC_APP_URL=https://rentfusion.nl
+# NEXT_PUBLIC_APP_URL=https://uprent.nl
 ```
 
 ### Email (Resend) - Optional but Recommended

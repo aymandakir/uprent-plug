@@ -8,7 +8,7 @@ export function CTA() {
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 px-6 text-center">
         <h2 className="text-3xl font-bold md:text-4xl">Ready to be 15x faster than the crowd?</h2>
         <p className="text-lg text-white/90">
-          Join RentFusion and get your first viewing within 7 days—or your next month is 50% off.
+          Join Uprent Plus and get your first viewing within 7 days—or your next month is 50% off.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Link

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RentFusion",
-    "slug": "rentfusion",
+    "name": "Uprent Plus",
+    "slug": "uprent-plus",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rentfusion.app",
+      "bundleIdentifier": "com.uprent-plus.app",
       "infoPlist": {
         "NSCameraUsageDescription": "We need camera access to upload property photos",
         "NSPhotoLibraryUsageDescription": "We need photo library access to upload images"
@@ -24,7 +24,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.rentfusion.app",
+      "package": "com.uprent-plus.app",
       "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE", "NOTIFICATIONS"]
     },
     "plugins": [

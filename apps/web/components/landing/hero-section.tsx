@@ -1,13 +1,30 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Play, Search } from 'lucide-react';
+import { ArrowRight, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import type { Translation } from '@/lib/translations/en';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  translations?: Translation['hero'];
+}
+
+export function HeroSection({ translations }: HeroSectionProps = {}) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [showVideo, setShowVideo] = useState(false);
+
+  // Default translations (English) if not provided
+  const t = translations || {
+    badge: 'Built for Uprent 🚀',
+    title: 'Find Your Dutch Rental in 15 Seconds',
+    subtitle: 'AI-powered alerts for 1,500+ sources. Never miss a listing again.',
+    cta: {
+      primary: 'Start Free Trial',
+      secondary: 'Watch Demo',
+    },
+    trustBadge: 'Trusted by 10,000+ renters 🇳🇱',
+    searchPlaceholder: 'Search Amsterdam, Rotterdam, Utrecht...',
+  };
 
   const searchSuggestions = [
     'Amsterdam Centrum',
@@ -40,7 +57,7 @@ export function HeroSection() {
           className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm"
         >
           <span className="text-sm font-semibold text-white">
-            Trusted by 10,000+ renters 🇳🇱
+            {t.trustBadge}
           </span>
         </motion.div>
 
@@ -50,7 +67,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mb-6 text-5xl font-bold leading-tight text-white md:text-7xl lg:text-8xl"
         >
-          Find Your Dutch Rental in 15 Seconds
+          {t.title}
         </motion.h1>
 
         <motion.p
@@ -59,7 +76,7 @@ export function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mx-auto mb-12 max-w-3xl text-xl text-blue-50 md:text-2xl"
         >
-          AI-powered alerts for 1,500+ sources. Never miss a listing again.
+          {t.subtitle}
         </motion.p>
 
         {/* Interactive Search Bar */}
@@ -76,7 +93,7 @@ export function HeroSection() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search Amsterdam, Rotterdam, Utrecht..."
+                placeholder={t.searchPlaceholder}
                 className="flex-1 border-0 bg-transparent text-lg text-gray-900 placeholder-gray-400 focus:outline-none"
               />
             </div>
@@ -107,49 +124,17 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
+          className="mb-8 flex flex-col items-center justify-center"
         >
           <Link
             href="/register"
             className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-lg font-semibold text-blue-600 shadow-2xl transition-all duration-200 hover:scale-105 hover:shadow-3xl"
           >
-            Start Free Trial
+            {t.cta.primary}
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </Link>
-
-          <button
-            onClick={() => setShowVideo(true)}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 bg-white/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/20 hover:border-white/50"
-          >
-            <Play className="h-5 w-5" />
-            Watch Demo
-          </button>
         </motion.div>
       </div>
-
-      {/* Video Modal */}
-      {showVideo && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-6 backdrop-blur-sm"
-          onClick={() => setShowVideo(false)}
-        >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="relative aspect-video w-full max-w-4xl overflow-hidden rounded-2xl bg-gray-900"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-              className="h-full w-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </motion.div>
-        </motion.div>
-      )}
     </section>
   );
 }

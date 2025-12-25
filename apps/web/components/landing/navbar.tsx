@@ -25,7 +25,7 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="text-2xl font-bold text-gray-900">
-            🏠 RentFusion
+            🏠 Uprent Plus
           </Link>
 
           {/* Desktop Menu */}

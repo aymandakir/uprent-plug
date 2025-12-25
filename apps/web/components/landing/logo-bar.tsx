@@ -1,6 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import type { Translation } from '@/lib/translations/en';
+
+interface LogoBarProps {
+  translations?: Translation['logoBar'];
+}
 
 const universities = [
   { name: 'UvA', logo: '🏛️' },
@@ -10,12 +15,18 @@ const universities = [
   { name: 'Utrecht', logo: '✨' },
 ];
 
-export function LogoBar() {
+export function LogoBar({ translations }: LogoBarProps = {}) {
+  const defaultT = {
+    title: 'Trusted by students and professionals at',
+  };
+  
+  const t = translations || defaultT;
+
   return (
     <section className="border-b border-gray-200 bg-gray-50 py-12">
       <div className="mx-auto max-w-7xl px-6">
         <p className="mb-8 text-center text-sm font-medium text-gray-600">
-          Trusted by students and professionals at:
+          {t.title}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
           {universities.map((uni, index) => (
@@ -23,9 +34,9 @@ export function LogoBar() {
               key={uni.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="flex flex-col items-center gap-2 transition-all duration-300 hover:scale-110"
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
+              className="flex flex-col items-center gap-2 transition-all duration-300 hover:scale-110 animate-on-scroll"
             >
               <div className="text-4xl grayscale transition-all duration-300 hover:grayscale-0">
                 {uni.logo}

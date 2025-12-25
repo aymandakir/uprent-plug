@@ -1,5 +1,5 @@
 {
-  "name": "@rentfusion/scraper",
+  "name": "@uprent-plus/scraper",
   "version": "0.0.1",
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "scrape:all": "tsx src/run-all.ts"
   },
   "dependencies": {
-    "@rentfusion/database": "workspace:*",
+    "@uprent-plus/database": "workspace:*",
     "@supabase/supabase-js": "^2.39.0",
     "axios": "^1.7.9",
     "bullmq": "^5.28.2",

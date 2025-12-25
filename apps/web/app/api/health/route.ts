@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@rentfusion/database";
+import { supabase } from "@uprent-plus/database";
 
 export async function GET() {
   const checks = {

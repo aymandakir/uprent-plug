@@ -2,38 +2,55 @@
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import type { Translation } from '@/lib/translations/en';
 
-const testimonials = [
-  {
-    name: 'Sophie van der Berg',
-    role: 'Marketing Manager',
-    city: 'Amsterdam',
-    quote: 'I found my apartment in 3 days after searching for 2 months. RentFusion is a game-changer!',
-    image: '👩‍💼',
-  },
-  {
-    name: 'James Wilson',
-    role: 'Software Engineer',
-    city: 'Rotterdam',
-    quote: 'The AI letter generator saved me so much time. Got 3 viewings in the first week!',
-    image: '👨‍💻',
-  },
-  {
-    name: 'Emma de Vries',
-    role: 'Student',
-    city: 'Utrecht',
-    quote: 'As an international student, finding housing was overwhelming. RentFusion made it easy.',
-    image: '👩‍🎓',
-  },
-];
+interface SocialProofProps {
+  translations?: Translation['socialProof'];
+}
 
-const metrics = [
-  { label: '10,000+', sublabel: 'Active Users' },
-  { label: '50,000+', sublabel: 'Listings Monitored' },
-  { label: '3 Days', sublabel: 'Average Time to Find Rental' },
-];
+export function SocialProof({ translations }: SocialProofProps = {}) {
+  const defaultT = {
+    title: 'Renters are finding homes faster with Uprent Plus',
+    testimonials: [
+      {
+        quote: 'I found my apartment in 3 days after searching for 2 months',
+        name: 'Sarah M.',
+        role: 'Student',
+        city: 'Amsterdam',
+      },
+      {
+        quote: 'The AI letter generation saved me hours of writing applications',
+        name: 'Marco R.',
+        role: 'Software Engineer',
+        city: 'Rotterdam',
+      },
+      {
+        quote: 'Finally found a place that accepts pets thanks to the advanced filters',
+        name: 'Linda K.',
+        role: 'Designer',
+        city: 'Utrecht',
+      },
+    ],
+    metrics: {
+      users: '10,000+ Active Users',
+      listings: '50,000+ Listings Monitored',
+      timeToFind: '3 Days Average Time to Find Rental',
+    },
+  };
 
-export function SocialProof() {
+  const t = translations || defaultT;
+  
+  const testimonials = t.testimonials.map((testimonial, index) => ({
+    ...testimonial,
+    image: ['👩‍💼', '👨‍💻', '👩‍🎓'][index] || '👤',
+  }));
+
+  const metrics = [
+    { label: t.metrics.users.split(' ')[0], sublabel: t.metrics.users.split(' ').slice(1).join(' ') },
+    { label: t.metrics.listings.split(' ')[0], sublabel: t.metrics.listings.split(' ').slice(1).join(' ') },
+    { label: t.metrics.timeToFind.split(' ').slice(0, 2).join(' '), sublabel: t.metrics.timeToFind.split(' ').slice(2).join(' ') },
+  ];
+
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   useEffect(() => {
@@ -41,19 +58,20 @@ export function SocialProof() {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials.length]);
 
   return (
     <section className="bg-gray-50 py-20 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-12 text-center"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="mb-12 text-center animate-on-scroll"
         >
           <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
-            Renters are finding homes faster with RentFusion
+            {t.title}
           </h2>
         </motion.div>
 
@@ -62,11 +80,11 @@ export function SocialProof() {
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.name}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className={`rounded-2xl border border-gray-200 bg-white p-8 shadow-lg transition-all duration-300 ${
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
+              className={`rounded-2xl border border-gray-200 bg-white p-8 shadow-lg transition-all duration-300 animate-on-scroll ${
                 index === currentTestimonial
                   ? 'ring-2 ring-blue-500 scale-105'
                   : 'hover:shadow-xl'
@@ -89,18 +107,19 @@ export function SocialProof() {
 
         {/* Metrics Bar */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid gap-8 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-8 md:grid-cols-3"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="grid gap-8 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-8 md:grid-cols-3 animate-on-scroll"
         >
           {metrics.map((metric, index) => (
             <div key={metric.label} className="text-center text-white">
               <motion.p
-                initial={{ opacity: 0, scale: 0.5 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, type: 'spring' }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
                 className="mb-2 text-4xl font-bold md:text-5xl"
               >
                 {metric.label}

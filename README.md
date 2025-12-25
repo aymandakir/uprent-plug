@@ -17,7 +17,7 @@ While existing platforms offer static listings, Uprent Plug acts as an aggressiv
 
 This repository implements the **"Plug" architecture**—a modular system that connects raw market data with Generative AI to deliver a **4x higher success rate** for renters.
 
-### 🧠 1. The AI Agent (`@rentfusion/ai`)
+### 🧠 1. The AI Agent (`@uprent-plus/ai`)
 
 **Context:** Landlords ignore generic emails.
 
@@ -71,7 +71,7 @@ This MVP acts as the **"Plug"** that supercharges the existing business model:
 2. **Uprent Plug activates:**
    - Spins up a dedicated search worker in `apps/scraper`.
    - Listens for matches in real-time.
-   - Triggers `@rentfusion/ai` to draft the perfect letter.
+   - Triggers `@uprent-plus/ai` to draft the perfect letter.
    - Pushes the notification to the user's device via `apps/mobile`.
 
 ## 🚀 Getting Started

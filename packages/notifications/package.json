@@ -1,11 +1,11 @@
 {
-  "name": "@rentfusion/notifications",
+  "name": "@uprent-plus/notifications",
   "version": "0.0.1",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "dependencies": {
-    "@rentfusion/database": "workspace:*",
+    "@uprent-plus/database": "workspace:*",
     "expo-server-sdk": "^3.11.0",
     "node-telegram-bot-api": "^0.66.0",
     "resend": "^4.0.1",

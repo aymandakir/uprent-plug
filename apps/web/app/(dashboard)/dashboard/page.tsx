@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PropertyCard } from "@/components/dashboard/property-card";
 import { FilterPanel } from "@/components/dashboard/filter-panel";
-import { supabase } from "@rentfusion/database";
+import { supabase } from "@uprent-plus/database";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, SlidersHorizontal } from "lucide-react";
 import { LetterGeneratorModal } from "@/components/dashboard/letter-generator-modal";
 import { toast } from "sonner";
-import type { Property } from "@rentfusion/database";
+import type { Property } from "@uprent-plus/database";
 
 export default function DashboardPage() {
   const [filters, setFilters] = useState({

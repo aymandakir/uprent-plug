@@ -4,6 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { Bell, FileText, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import type { Translation } from '@/lib/translations/en';
+
+interface InteractiveDemoProps {
+  translations?: Translation['interactiveDemo'];
+}
 
 const mockProperties = [
   {
@@ -32,7 +37,17 @@ const mockProperties = [
   },
 ];
 
-export function InteractiveDemo() {
+export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
+  const defaultT = {
+    title: 'See Uprent Plus in action',
+    subtitle: 'Real-time property feed showing new listings',
+    notification: 'New match in {city}!',
+    cta: 'Generate AI Letter',
+    live: 'Live',
+  };
+
+  const t = translations || defaultT;
+  
   const [currentProperty, setCurrentProperty] = useState(0);
   const [showNotification, setShowNotification] = useState(false);
   const [showLetterModal, setShowLetterModal] = useState(false);
@@ -57,16 +72,17 @@ export function InteractiveDemo() {
     <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-12 text-center"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="mb-12 text-center animate-on-scroll"
         >
           <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
-            See RentFusion in action
+            {t.title}
           </h2>
           <p className="text-xl text-gray-600">
-            Watch as new listings appear in real-time and get instant alerts
+            {t.subtitle}
           </p>
         </motion.div>
 
@@ -77,7 +93,7 @@ export function InteractiveDemo() {
               <h3 className="text-2xl font-bold text-gray-900">Property Feed</h3>
               <div className="flex items-center gap-2 text-sm text-green-600">
                 <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
-                Live
+                {t.live}
               </div>
             </div>
 
@@ -87,7 +103,7 @@ export function InteractiveDemo() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
                 className="space-y-4"
               >
                 <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
@@ -114,7 +130,7 @@ export function InteractiveDemo() {
               className="mt-6 w-full rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-purple-700"
             >
               <FileText className="mr-2 inline h-5 w-5" />
-              Generate AI Letter
+              {t.cta}
             </button>
           </div>
 
@@ -130,7 +146,7 @@ export function InteractiveDemo() {
                 <div className="flex items-center gap-3 text-white">
                   <Bell className="h-6 w-6" />
                   <div>
-                    <p className="font-semibold">New match in {property.city}!</p>
+                    <p className="font-semibold">{t.notification.replace('{city}', property.city)}</p>
                     <p className="text-sm text-blue-100">€{property.price}/month</p>
                   </div>
                 </div>
@@ -143,9 +159,9 @@ export function InteractiveDemo() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="mt-12 text-center"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
+          className="mt-12 text-center animate-on-scroll"
         >
           <Link
             href="/register"

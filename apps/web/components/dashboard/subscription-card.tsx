@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@rentfusion/database';
+import { supabase } from '@uprent-plus/database';
 import { CreditCard, Calendar, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 

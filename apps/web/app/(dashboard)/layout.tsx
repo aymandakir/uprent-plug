@@ -6,7 +6,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <nav className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/dashboard" className="text-2xl font-bold">
-            🏠 RentFusion
+            🏠 Uprent Plus
           </Link>
           <div className="flex gap-6">
             <Link href="/dashboard/matches" className="hover:text-blue-600">

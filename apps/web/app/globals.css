@@ -4,7 +4,16 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    /* Remove native smooth scroll when Lenis is active */
+    scroll-behavior: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scroll margin for anchor links (offset for fixed headers) */
+  section[id],
+  div[id] {
+    scroll-margin-top: 80px;
   }
 }
 
@@ -194,9 +203,15 @@
   animation-delay: 0.5s;
 }
 
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
+/* Performance optimizations for animations */
+.animate-on-scroll {
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animated {
+    will-change: auto;
+  }
 }
 
 /* Smooth animations for reduced motion users */
@@ -212,4 +227,27 @@ html {
   html {
     scroll-behavior: auto;
   }
+}
+
+/* RTL Support for Arabic */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
 }

@@ -1,32 +1,47 @@
 'use client';
 
 import Link from 'next/link';
-import { Globe } from 'lucide-react';
+import { LanguageSelector } from './language-selector';
+import type { Translation } from '@/lib/translations/en';
 
-const footerLinks = {
-  Product: [
-    { label: 'Features', href: '#features' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'FAQ', href: '#faq' },
-  ],
-  Company: [
-    { label: 'About', href: '/about' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Careers', href: '/careers' },
-  ],
-  Legal: [
-    { label: 'Privacy', href: '/privacy' },
-    { label: 'Terms', href: '/terms' },
-    { label: 'Cookies', href: '/cookies' },
-  ],
-  Contact: [
-    { label: 'Email', href: 'mailto:hello@rentfusion.nl' },
-    { label: 'Twitter', href: 'https://twitter.com/rentfusion' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/company/rentfusion' },
-  ],
-};
+interface FooterProps {
+  translations?: Translation['footer'];
+}
 
-export function Footer() {
+export function Footer({ translations }: FooterProps = {}) {
+  const defaultT = {
+    tagline: 'Enhanced features for Uprent - The AI rental search platform',
+    attribution: 'Built for Uprent. Not officially affiliated with Uprent B.V.',
+    links: {
+      product: {
+        title: 'Product',
+        items: [
+          { label: 'Uprent Platform', href: 'https://uprent.nl/en-nl' },
+          { label: 'Features', href: '#features' },
+          { label: 'Pricing', href: '/pricing' },
+        ],
+      },
+      company: {
+        title: 'Company',
+        items: [
+          { label: 'About Uprent', href: 'https://uprent.nl/en-nl' },
+          { label: 'Contact', href: 'https://uprent.nl/en-nl#contact' },
+        ],
+      },
+      legal: {
+        title: 'Legal',
+        items: [
+          { label: 'Privacy Policy', href: 'https://uprent.nl/en-nl/privacy' },
+          { label: 'Terms of Service', href: 'https://uprent.nl/en-nl/terms' },
+        ],
+      },
+    },
+    copyright: '© 2025 Uprent Plus. All rights reserved.',
+    disclaimer: 'This is a demonstration extension showcasing additional features for the Uprent platform.',
+  };
+
+  const t = translations || defaultT;
+
   return (
     <footer className="border-t border-gray-200 bg-white">
       <div className="mx-auto max-w-7xl px-6 py-12">
@@ -34,19 +49,19 @@ export function Footer() {
           {/* Logo */}
           <div className="md:col-span-1">
             <Link href="/" className="text-2xl font-bold text-gray-900">
-              🏠 RentFusion
+              🏠 Uprent Plus
             </Link>
             <p className="mt-4 text-sm text-gray-600">
-              Find your Dutch rental faster with AI-powered alerts.
+              {t.tagline}
             </p>
           </div>
 
           {/* Links */}
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h3 className="mb-4 font-semibold text-gray-900">{category}</h3>
+          {Object.entries(t.links).map(([key, section]) => (
+            <div key={key}>
+              <h3 className="mb-4 font-semibold text-gray-900">{section.title}</h3>
               <ul className="space-y-2">
-                {links.map((link) => (
+                {section.items.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
@@ -63,16 +78,15 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-8 md:flex-row">
-          <p className="text-sm text-gray-600">
-            © {new Date().getFullYear()} RentFusion. All rights reserved.
-          </p>
-          <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4 text-gray-400" />
-            <select className="border-0 bg-transparent text-sm text-gray-600 focus:outline-none">
-              <option>English</option>
-              <option>Nederlands</option>
-            </select>
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <p className="text-sm text-gray-600">
+              {t.copyright} {t.attribution}
+            </p>
+            <p className="text-xs text-gray-500">
+              {t.disclaimer}
+            </p>
           </div>
+          <LanguageSelector />
         </div>
       </div>
     </footer>

@@ -1,6 +1,6 @@
 # Stripe Subscription Setup Guide
 
-This guide will help you set up Stripe subscriptions for RentFusion.
+This guide will help you set up Stripe subscriptions for Uprent Plus.
 
 ## Prerequisites
 

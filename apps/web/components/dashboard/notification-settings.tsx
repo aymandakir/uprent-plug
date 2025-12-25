@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Bell, Mail, MessageSquare, Smartphone } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@rentfusion/database";
+import { supabase } from "@uprent-plus/database";
 
 type Channels = {
   email: boolean;

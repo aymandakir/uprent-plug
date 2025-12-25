@@ -7,8 +7,8 @@ import { useMutation } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Sparkles, Copy, Download, Send, Edit2 } from "lucide-react";
 import { toast } from "sonner";
-import type { Property } from "@rentfusion/database";
-import { LetterInputSchema } from "@rentfusion/ai";
+import type { Property } from "@uprent-plus/database";
+import { LetterInputSchema } from "@uprent-plus/ai";
 import type { z } from "zod";
 
 interface LetterGeneratorModalProps {
@@ -84,7 +84,7 @@ export function LetterGeneratorModal({ property, onClose, onSubmit }: LetterGene
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `application-${(property as any).city || "rentfusion"}-${Date.now()}.txt`;
+    a.download = `application-${(property as any).city || "uprent-plus"}-${Date.now()}.txt`;
     a.click();
     URL.revokeObjectURL(url);
     toast.success("Letter downloaded!");

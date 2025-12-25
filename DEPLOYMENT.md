@@ -1,7 +1,7 @@
 # 🚀 Production Deployment Guide
 
 ## Prerequisites
-- Domain: rentfusion.nl configured
+- Domain: uprent.nl configured
 - GitHub repo with access
 - Vercel account
 - Railway account
@@ -17,7 +17,7 @@
 2. Import `apps/web` project
 3. Add environment variables from `.env.example`
 4. Deploy `main` branch
-5. Configure custom domain: `rentfusion.nl`
+5. Configure custom domain: `uprent.nl`
 
 ## Step 3: Deploy Scraper (Railway)
 1. Create new Railway project
@@ -27,7 +27,7 @@
 5. Deploy from GitHub `main` branch
 
 ## Step 4: Configure Webhooks
-- Stripe webhook: `https://rentfusion.nl/api/stripe/webhook`
+- Stripe webhook: `https://uprent.nl/api/stripe/webhook`
 - Events: `checkout.*`, `customer.subscription.*`, `invoice.*`
 - Local test: `stripe listen --forward-to localhost:3000/api/stripe/webhook`
 
@@ -49,12 +49,12 @@ eas submit --platform android
 ```
 
 ## Step 7: DNS
-- A Record: `rentfusion.nl` → Vercel IP
-- CNAME: `www.rentfusion.nl` → `cname.vercel-dns.com`
+- A Record: `uprent.nl` → Vercel IP
+- CNAME: `www.uprent.nl` → `cname.vercel-dns.com`
 - TXT: verification + email (Resend)
 
 ## Post-Deployment Checklist
-- Health check passes: `https://rentfusion.nl/api/health`
+- Health check passes: `https://uprent.nl/api/health`
 - Scraper running on Railway
 - Stripe webhooks receiving events
 - Email/SMS/Push/Telegram notifications working

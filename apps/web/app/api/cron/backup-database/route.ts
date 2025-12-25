@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@rentfusion/database";
+import { supabaseAdmin } from "@uprent-plus/database";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");

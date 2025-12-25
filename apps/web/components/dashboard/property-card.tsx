@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Heart, MapPin, BedDouble, Ruler } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import type { Property } from "@rentfusion/database";
+import type { Property } from "@uprent-plus/database";
 
 interface PropertyCardProps {
   property: Property;

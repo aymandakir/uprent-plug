@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe/config';
-import { supabaseAdmin } from '@rentfusion/database';
+import { supabaseAdmin } from '@uprent-plus/database';
 
 export async function POST(req: NextRequest) {
   try {
