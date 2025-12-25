@@ -15,7 +15,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-black">
-      <Navbar translations={t.footer} />
+      <Navbar />
       <main>
         <PricingSection translations={t.pricing} />
         <FAQSection translations={t.faq} />
