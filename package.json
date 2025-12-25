@@ -2,16 +2,22 @@
   "name": "uprent-plus",
   "private": true,
   "scripts": {
+    "test:web": "turbo run test --filter=@uprent-plus/web",
+    "test:unit": "turbo run test --filter=@uprent-plus/web",
+    "test:e2e": "cd apps/web && pnpm test:e2e",
     "dev": "turbo run dev",
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:push": "pnpm --filter database db:push",
-    "db:studio": "pnpm --filter database studio"
+    "db:studio": "pnpm --filter database studio",
+    "verify": "tsx scripts/verify-setup.ts"
   },
   "devDependencies": {
+    "dotenv": "^16.4.7",
     "prettier": "^3.3.3",
+    "tsx": "^4.19.2",
     "turbo": "^2.7.1",
     "typescript": "^5.6.3"
   },

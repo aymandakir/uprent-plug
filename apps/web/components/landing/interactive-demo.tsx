@@ -88,7 +88,7 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
 
         <div className="relative mx-auto max-w-4xl">
           {/* Property Feed Card */}
-          <div className="card">
+          <div className="card relative">
             <div className="mb-6 flex items-center justify-between">
               <h3 className="text-h3 font-heading font-semibold text-white">Property Feed</h3>
               <div className="flex items-center gap-2 text-body-sm text-electric-blue">
@@ -138,16 +138,20 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
           <AnimatePresence>
             {showNotification && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.8, x: 100, y: -100 }}
-                animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="absolute right-0 top-0 rounded-lg border border-white/20 bg-electric-blue p-4 shadow-glow"
+                initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="absolute right-4 top-20 z-10 rounded-lg border border-white/20 bg-neutral-900 backdrop-blur-sm p-5 shadow-glow"
+                style={{ minWidth: '280px' }}
               >
-                <div className="flex items-center gap-3 text-white">
-                  <Bell className="h-5 w-5" />
-                  <div>
-                    <p className="text-body-sm font-medium">{t.notification.replace('{city}', property.city)}</p>
-                    <p className="text-caption text-white/70">€{property.price}/month</p>
+                <div className="flex items-start gap-4 text-white">
+                  <div className="mt-0.5 flex-shrink-0">
+                    <Bell className="h-5 w-5 text-electric-blue" />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-body-sm font-medium text-white">{t.notification.replace('{city}', property.city)}</p>
+                    <p className="text-body text-electric-blue font-medium">€{property.price}/month</p>
                   </div>
                 </div>
               </motion.div>

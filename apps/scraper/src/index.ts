@@ -1,3 +1,6 @@
+// Load environment variables FIRST before any other imports
+import 'dotenv/config';
+
 import { supabase } from './lib/supabase';
 import { FundaScraper } from './scrapers/funda-scraper';
 import { findMatches } from './matcher';

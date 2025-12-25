@@ -1,3 +1,6 @@
+// Load environment variables FIRST
+import "dotenv/config";
+
 import { BaseScraper, ScrapedListing } from "../utils/base-scraper";
 import * as cheerio from "cheerio";
 

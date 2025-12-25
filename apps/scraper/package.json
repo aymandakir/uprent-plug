@@ -10,8 +10,9 @@
     "scrape:all": "tsx src/run-all.ts"
   },
   "dependencies": {
-    "@uprent-plus/database": "workspace:*",
     "@supabase/supabase-js": "^2.39.0",
+    "@uprent-plus/database": "workspace:*",
+    "ai": "^6.0.3",
     "axios": "^1.7.9",
     "bullmq": "^5.28.2",
     "cheerio": "^1.0.0",
@@ -30,4 +31,3 @@
     "typescript": "^5.6.3"
   }
 }
-

@@ -32,7 +32,7 @@ export function Navbar() {
             <Link href="/login" className="text-sm font-sans font-medium text-white/80 hover:text-white transition-colors">
               Login
             </Link>
-            <Link href="/register" className="btn-primary h-10 px-6 text-sm">
+            <Link href="/register" className="btn-primary h-10 px-6 text-sm flex items-center justify-center">
               Sign Up
             </Link>
           </div>

@@ -9,7 +9,12 @@
     "start": "next start",
     "lint": "next lint --max-warnings=50",
     "lint:fix": "next lint --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:e2e": "node scripts/run-playwright.mjs test",
+    "test:e2e:ui": "node scripts/run-playwright.mjs test --ui"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -33,6 +38,7 @@
     "@uprent-plus/ai": "workspace:*",
     "@uprent-plus/database": "workspace:*",
     "@uprent-plus/ui": "workspace:*",
+    "ai": "^6.0.3",
     "autoprefixer": "^10.4.20",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -50,19 +56,26 @@
     "recharts": "^2.13.0",
     "sonner": "^1.5.0",
     "stripe": "^20.1.0",
-    "tailwind-merge": "^2.5.2",
+    "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.3",
     "zod": "^3.23.8",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@repo/eslint-config": "workspace:*",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
     "@types/node": "^22.10.2",
     "@types/prop-types": "^15.7.15",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^5.1.2",
+    "@vitest/ui": "4.0.16",
+    "jsdom": "^27.3.0",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15"
+    "tailwindcss": "^3.4.15",
+    "vitest": "^4.0.16"
   }
 }

@@ -1,3 +1,6 @@
+// Load environment variables if not already loaded
+import 'dotenv/config';
+
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;

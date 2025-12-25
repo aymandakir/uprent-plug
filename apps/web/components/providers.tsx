@@ -1,9 +1,9 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState } from 'react';
-import SmoothScroll from './smooth-scroll';
+import { SmoothScroll } from './smooth-scroll';
+import { ToastProvider } from './notifications/toast-provider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -11,19 +11,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000,
-            refetchOnWindowFocus: false
-          }
-        }
+            staleTime: 60 * 1000, // 1 minute
+            refetchOnWindowFocus: false,
+          },
+        },
       })
   );
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SmoothScroll />
-      {children}
-      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen={false} />}
+      <ToastProvider>
+        <SmoothScroll />
+        {children}
+      </ToastProvider>
     </QueryClientProvider>
   );
 }
-

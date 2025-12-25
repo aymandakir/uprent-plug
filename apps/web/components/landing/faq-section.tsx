@@ -63,7 +63,7 @@ export function FAQSection({ translations }: FAQSectionProps = {}) {
           </h2>
         </motion.div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {t.items.map((faq, index) => (
             <motion.div
               key={index}
@@ -71,15 +71,15 @@ export function FAQSection({ translations }: FAQSectionProps = {}) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.05 }}
-              className="overflow-hidden rounded-lg border border-white/10 bg-neutral-900 animate-on-scroll"
+              className="overflow-hidden rounded-xl border border-white/10 bg-neutral-900 transition-all duration-200 hover:border-white/20 animate-on-scroll"
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-white/5"
+                className="flex w-full items-center justify-between p-6 text-left transition-all duration-200 hover:bg-white/5 active:bg-white/10"
               >
-                <span className="text-body-lg font-medium text-white">{faq.question}</span>
+                <span className="pr-8 text-body-lg font-medium text-white leading-relaxed">{faq.question}</span>
                 <ChevronDown
-                  className={`h-5 w-5 text-white/60 transition-transform duration-200 ${
+                  className={`h-5 w-5 flex-shrink-0 text-white/60 transition-transform duration-300 ease-out ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
@@ -90,10 +90,10 @@ export function FAQSection({ translations }: FAQSectionProps = {}) {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-6 text-body text-white/70">{faq.answer}</div>
+                    <div className="px-6 pb-6 pt-2 text-body text-white/70 leading-relaxed">{faq.answer}</div>
                   </motion.div>
                 )}
               </AnimatePresence>

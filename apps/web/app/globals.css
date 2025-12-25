@@ -78,6 +78,7 @@
     @apply transition-all duration-150 ease-out;
     @apply hover:scale-[1.02] active:scale-[0.98];
     @apply focus:outline-none focus:ring-2 focus:ring-white/50;
+    @apply flex items-center justify-center;
   }
 
   .btn-primary-dark {
@@ -90,6 +91,7 @@
     @apply transition-all duration-150 ease-out;
     @apply hover:bg-white/10 active:scale-[0.98];
     @apply focus:outline-none focus:ring-2 focus:ring-white/50;
+    @apply flex items-center justify-center;
   }
 
   .btn-ghost {
