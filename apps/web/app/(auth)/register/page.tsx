@@ -88,19 +88,43 @@ export default function RegisterPage() {
             id: authData.user.id,
             email: formData.email,
             full_name: formData.fullName,
+            locale: 'en',
+            subscription_tier: 'free',
+            subscription_status: 'active',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
           });
 
         if (profileError) {
           console.error('Profile creation error:', profileError);
-          // Continue anyway - profile can be created later
+          // Continue anyway - might be created by trigger
+        }
+
+        // Create default settings (if settings table exists)
+        const { error: settingsError } = await supabase
+          .from('settings')
+          .insert({
+            user_id: authData.user.id,
+            email_notifications: true,
+            push_notifications: true,
+            sms_notifications: false,
+            in_app_notifications: true,
+            marketing_emails: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }).select().single();
+
+        if (settingsError) {
+          // Settings table might not exist, continue
+          console.log('Settings creation skipped:', settingsError.message);
         }
 
         toast.success('Account created! Please check your email to verify your account.');
         
-        // Redirect to onboarding after a short delay
+        // Redirect to login after a short delay
         setTimeout(() => {
-          router.push('/onboarding');
-        }, 1500);
+          router.push('/login');
+        }, 3000);
       }
     } catch (error: any) {
       toast.error(error.message || 'An error occurred. Please try again.');

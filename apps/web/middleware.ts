@@ -1,58 +1,56 @@
+import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { checkRateLimit, getRateLimitIdentifier } from '@/lib/api/rate-limit';
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = await createClient();
 
-  // Skip rate limiting for static assets and API routes that don't need it
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/static') ||
-    pathname.startsWith('/api/health')
-  ) {
-    return NextResponse.next();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Public routes that don't require authentication
+  const publicRoutes = [
+    '/',
+    '/login',
+    '/register',
+    '/forgot-password',
+    '/reset-password',
+    '/auth/callback',
+    '/terms',
+    '/privacy',
+    '/pricing',
+  ];
+
+  const isPublicRoute = publicRoutes.some(
+    (route) =>
+      req.nextUrl.pathname === route ||
+      req.nextUrl.pathname.startsWith('/api/') ||
+      req.nextUrl.pathname.startsWith('/_next/') ||
+      req.nextUrl.pathname.startsWith('/static/')
+  );
+
+  // Redirect to login if accessing protected route without session
+  if (!session && !isPublicRoute) {
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = '/login';
+    redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname);
+    return NextResponse.redirect(redirectUrl);
   }
 
-  // Rate limit API routes
-  if (pathname.startsWith('/api')) {
-    // Get user ID from session if available
-    const userId = request.headers.get('x-user-id') || undefined;
-    const identifier = getRateLimitIdentifier(request, userId);
-    
-    const result = await checkRateLimit(identifier, pathname);
-
-    if (!result.allowed) {
-      return new NextResponse('Rate limit exceeded', {
-        status: 429,
-        headers: {
-          'X-RateLimit-Limit': '100',
-          'X-RateLimit-Remaining': result.remaining.toString(),
-          'X-RateLimit-Reset': result.reset.toString(),
-          'Retry-After': Math.ceil((result.reset - Date.now()) / 1000).toString(),
-        },
-      });
-    }
-
-    // Add rate limit headers to response
-    const response = NextResponse.next();
-    response.headers.set('X-RateLimit-Limit', '100');
-    response.headers.set('X-RateLimit-Remaining', result.remaining.toString());
-    response.headers.set('X-RateLimit-Reset', result.reset.toString());
-    return response;
+  // Redirect to dashboard if accessing auth pages with active session
+  if (session && (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/register')) {
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = '/dashboard';
+    return NextResponse.redirect(redirectUrl);
   }
 
-  return NextResponse.next();
+  return res;
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
