@@ -106,11 +106,7 @@ const nextConfig = {
     return config;
   },
 
-  // Experimental features for better performance
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-  },
+  // Removed experimental.optimizeCss - causing build errors
 };
 
 export default nextConfig;
