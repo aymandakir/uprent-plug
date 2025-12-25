@@ -1,118 +1,173 @@
-# Uprent Plug 🔌
-## The Next-Generation AI & Scraping Engine Powering Uprent.nl
+# Uprent Plus 🚀
 
-[![Stack](https://img.shields.io/badge/Turborepo-Next.js%2014-blue)](https://turborepo.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org)
-[![Supabase](https://img.shields.io/badge/Supabase-Postgres-green)](https://supabase.com)
-[![Stripe](https://img.shields.io/badge/Stripe-Payments-purple)](https://stripe.com)
-[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-green)](https://openai.com)
+> **An Enhanced Extension for Uprent** — A side project exploring advanced features for the Dutch rental market, built to understand the process and deliver real value.
 
-## 🚀 The Mission
+[![Deploy](https://vercel.com/button)](https://vercel.com/new)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Uprent Plug** is the high-performance MVP backend and frontend architecture designed to scale **Uprent.nl**—the Netherlands' leading AI rental assistant.
+## 📖 Overview
 
-While existing platforms offer static listings, Uprent Plug acts as an aggressive, intelligent layer on top of the market. It automates the "impossible" parts of renting: monitoring 1,500+ sources simultaneously and applying via AI within seconds.
+**Uprent Plus** is a feature-rich extension built on top of the Uprent platform, designed to fill gaps and explore innovative solutions for the competitive Dutch rental market. This project serves as both a learning experiment and a showcase of potential enhancements that could benefit renters across the Netherlands.
 
-## 💎 Core Value Proposition
+### What Makes This Different?
 
-This repository implements the **"Plug" architecture**—a modular system that connects raw market data with Generative AI to deliver a **4x higher success rate** for renters.
+While Uprent.nl provides excellent core rental search functionality, Uprent Plus adds:
 
-### 🧠 1. The AI Agent (`@uprent-plus/ai`)
+- ⚡ **15-second real-time alerts** from 1,500+ sources
+- 🤖 **AI-powered application letters** in 29 languages
+- 📱 **Multi-channel notifications** (Email, Push, SMS)
+- 🎯 **Advanced matching algorithms** with score-based recommendations
+- 📊 **Comprehensive dashboard** with activity tracking
+- 🌍 **Multi-language support** (24 languages)
+- 📝 **Contract analysis** (AI-powered lease review)
+- 🗺️ **Neighborhood insights** and property analytics
 
-**Context:** Landlords ignore generic emails.
+## 🎯 Project Goals
 
-**The Plug Solution:** A GPT-4 powered engine that analyzes the property description and the user's profile to generate hyper-personalized, Dutch-fluent application letters in **<5 seconds**.
+This project is built as a **side project for exploration and learning**, with the aim to:
 
-### 🕷️ 2. The Omni-Scraper (`apps/scraper`)
+1. **Understand the rental market** — Deep dive into user pain points and competitor offerings
+2. **Test innovative features** — Experiment with AI, real-time data, and advanced UX patterns
+3. **Deliver real value** — Create features that genuinely improve the rental search experience
+4. **Build a portfolio piece** — Showcase full-stack development, design, and product thinking
 
-**Context:** By the time a house is on Funda, it's gone.
+## ✨ Current Features
 
-**The Plug Solution:** A distributed scraping network (Puppeteer + Redis) that monitors **1,500+ sources**, including closed Facebook groups and local agency sites, detecting listings **15-60 minutes before** major aggregators.
+### Core Functionality
+- ✅ Real-time property monitoring from multiple sources (Funda, Pararius, etc.)
+- ✅ AI-powered property matching with customizable search profiles
+- ✅ Intelligent notifications (email, push, SMS for Premium users)
+- ✅ Multi-language support (24 languages including Dutch, English, German, Arabic, and more)
+- ✅ Advanced search filters (location, price, features, utilities, availability)
+- ✅ Property detail pages with comprehensive information
+- ✅ Saved properties with folder organization
 
-### 📱 3. Cross-Platform Ecosystem (`apps/web` & `apps/mobile`)
+### AI Features
+- ✅ **Application Letter Generator** — Personalized letters in 29 languages using GPT-4
+- ✅ **Contract Analyzer** — AI-powered lease review with risk assessment (Premium)
+- ✅ **Property Recommendations** — Machine learning-based suggestions
+- ✅ **Match Scoring** — Intelligent algorithm to rank property relevance
 
-**Context:** Renters need to act instantly, wherever they are.
+### Dashboard & User Experience
+- ✅ Modern, dark-themed dashboard inspired by ElevenLabs design
+- ✅ Activity feed with real-time updates
+- ✅ Statistics tracking (searches, matches, applications, saved properties)
+- ✅ Quick actions panel
+- ✅ Responsive design (mobile-first)
 
-**The Plug Solution:** A unified codebase using Expo and Next.js. Updates to the core logic deploy simultaneously to the **Web Dashboard**, **iOS App**, and **Android App**.
+## 🚀 Tech Stack
 
-## 🏗️ Architecture & Stack
+- **Frontend**: Next.js 15, React 18, TypeScript, TailwindCSS
+- **Backend**: Next.js API Routes, Supabase (PostgreSQL + PostGIS)
+- **Database**: Supabase with Row Level Security (RLS)
+- **Authentication**: Supabase Auth
+- **AI**: OpenAI GPT-4 (letter generation, contract analysis)
+- **Notifications**: Multi-channel (Email via Resend, Push via Expo, SMS via Twilio)
+- **Deployment**: Vercel (web), Railway (scraper)
+- **Scraping**: Puppeteer, BullMQ, Redis
+- **State Management**: React Server Components + SWR for client data
+- **Animations**: Framer Motion
+- **Smooth Scroll**: Lenis
 
-Built for speed, scalability, and developer experience.
+## 📱 Roadmap & Future Plans
 
-| Layer | Technology | Role |
-|-------|-----------|------|
-| **Monorepo** | Turborepo | Orchestrates build pipelines across Web, Mobile, and Backend. |
-| **Frontend** | Next.js 14 | High-performance Marketing & Dashboard (App Router). |
-| **Mobile** | Expo (React Native) | Native experience sharing 80% code with web. |
-| **Database** | Supabase | Postgres, Auth, and Real-time subscriptions. |
-| **Queues** | BullMQ + Redis | Handles massive scraping throughput without bottlenecks. |
-| **Payments** | Stripe | Subscription tiers (Basic/Premium) and webhook handling. |
+### Mobile Apps (Q2 2024)
+- 📱 **iOS App** — Native Swift/SwiftUI app with push notifications
+- 📱 **Android App** — Native Kotlin/Jetpack Compose app
+- 🔔 **Cross-platform notifications** via Expo Push Notifications
+- 📍 **Location-based alerts** using device GPS
+- 💬 **In-app messaging** with landlords
 
-## 📂 Project Structure
+### Enhanced Features
+- 🔍 **Map view** — Interactive map with property clustering
+- 📸 **Virtual tours** integration
+- 💰 **Price drop alerts** — Track favorite properties
+- 🏘️ **Neighborhood analytics** — Schools, crime rates, transport scores
+- 📊 **Market insights** — Price trends, availability statistics
+- 🤝 **Roommate matching** — Find compatible roommates
+- 📅 **Viewing scheduler** — Book property viewings in-app
+- 💼 **Landlord tools** — For property owners (future expansion)
+
+### Competitive Features
+Building features that address gaps in current market offerings:
+
+- **vs. Uprent.nl**: Advanced dashboard, AI letters, contract analysis, multi-language support
+- **vs. Funda**: Faster alerts, better filtering, AI recommendations
+- **vs. Pararius**: Real-time monitoring, personalized matching, mobile apps
+- **vs. Kamernet**: Professional application tools, neighborhood insights
+- **vs. Facebook Groups**: Organized search, quality filtering, verified listings
+
+### Technical Improvements
+- ⚡ **Performance**: Caching strategies, virtual scrolling, image optimization
+- 🔒 **Security**: Enhanced authentication, data encryption
+- 📈 **Analytics**: User behavior tracking, conversion optimization
+- 🧪 **Testing**: E2E tests with Playwright, unit tests with Vitest
+- 🌐 **Internationalization**: Full i18n support for all features
+
+## 🏗️ Project Structure
 
 ```
-uprent-plug/
+uprent-plus/
 ├── apps/
-│   ├── web/             # Next.js Dashboard (The Central Command)
-│   ├── mobile/          # Native iOS/Android App (The Instant Alert System)
-│   └── scraper/         # The Engine (Runs 24/7 monitoring the market)
+│   ├── web/              # Next.js 15 web application
+│   ├── mobile/           # React Native app (Expo) — Coming soon
+│   └── scraper/          # Property scraping service (Railway)
 ├── packages/
-│   ├── ai/              # LLM Logic (GPT-4 Integration)
-│   ├── database/        # Shared Schema & Supabase Client
-│   ├── notifications/   # Multi-channel Dispatcher (SMS, Email, Push)
-│   └── ui/              # Shared Design System
+│   ├── database/         # Supabase migrations & types
+│   ├── notifications/    # Multi-channel notification service
+│   ├── ai/               # AI services (OpenAI integrations)
+│   └── ui/               # Shared UI components
+└── docs/                 # Documentation
 ```
-
-## 🔌 Integration with Uprent.nl
-
-This MVP acts as the **"Plug"** that supercharges the existing business model:
-
-1. **User acquires subscription** on Uprent.nl.
-2. **Uprent Plug activates:**
-   - Spins up a dedicated search worker in `apps/scraper`.
-   - Listens for matches in real-time.
-   - Triggers `@uprent-plus/ai` to draft the perfect letter.
-   - Pushes the notification to the user's device via `apps/mobile`.
 
 ## 🚀 Getting Started
 
-To spin up the engine locally:
+### Prerequisites
+- Node.js 18+ and pnpm
+- Supabase account (for database and auth)
+- OpenAI API key (for AI features)
+- Vercel account (for deployment)
 
-### 1. Installation
+### Installation
 
 ```bash
-git clone https://github.com/aymandakir/uprent-plug.git
-cd uprent-plug
+# Clone the repository
+git clone https://github.com/yourusername/uprent-plus.git
+cd uprent-plus
+
+# Install dependencies
 pnpm install
-```
 
-### 2. Environment Setup
+# Set up environment variables
+cp .env.example .env.local
+# Fill in your Supabase, OpenAI, and other API keys
 
-Copy `.env.example` to `.env.local` and populate keys for Supabase, OpenAI, and Stripe.
+# Run migrations
+# Execute SQL files in packages/database/supabase/migrations/
 
-### 3. Ignition
-
-```bash
+# Start development server
 pnpm dev
 ```
 
-- **Web:** http://localhost:3000
-- **Scraper:** Background worker starts polling.
+### Environment Variables
 
-## 💼 Sponsorship & Investment
+See `ENV_VARIABLES.md` for a complete list of required environment variables.
 
-Uprent Plug is solving a massive inefficiency in the European housing market. We are automating the bridge between tenant and landlord.
+## 📝 License
 
-### Current Status:
+MIT License — feel free to use this project for learning and inspiration.
 
-- ✅ **MVP Live**
-- ✅ **Mobile Apps Ready**
-- ✅ **Scraper Network Active** (1,500+ Sources)
-- ✅ **Revenue Ready** (Stripe Integrated)
+## 🙏 Acknowledgments
 
-**Interested in fueling the future of rental tech?**  
-[Contact the Uprent Team](mailto:contact@uprent.nl)
+- **Uprent.nl** — For the excellent base platform that inspired this extension
+- **OpenAI** — For GPT-4 powering AI features
+- **Supabase** — For the amazing backend infrastructure
+- **Vercel** — For seamless deployment
+
+## 💡 Disclaimer
+
+This is a **demonstration project** built for learning and exploration. It is not officially affiliated with Uprent B.V. or any other rental platform. Built to showcase potential enhancements and understand the rental market better.
 
 ---
 
-<p align="center">Built with ❤️ and ☕️ for the 🇳🇱 housing market.</p>
+**Built with ❤️ as a side project to explore, learn, and deliver value to the Dutch rental market.**
