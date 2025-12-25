@@ -17,29 +17,22 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
-      }`}
-    >
-      <div className="mx-auto max-w-7xl px-6">
+    <nav className={`nav transition-all duration-200 ${isScrolled ? '' : 'border-b-0'}`}>
+      <div className="mx-auto max-w-content px-6">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-gray-900">
-            🏠 Uprent Plus
+          <Link href="/" className="text-2xl font-heading font-bold text-white">
+            Uprent Plus
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden items-center gap-8 md:flex">
-            <a href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
+          <div className="hidden items-center gap-3 md:flex">
+            <a href="#pricing" className="text-sm font-sans font-medium text-white/80 hover:text-white transition-colors">
               Pricing
             </a>
-            <Link href="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link href="/login" className="text-sm font-sans font-medium text-white/80 hover:text-white transition-colors">
               Login
             </Link>
-            <Link
-              href="/register"
-              className="rounded-full bg-blue-600 px-6 py-2 font-semibold text-white hover:bg-blue-700 transition-colors"
-            >
+            <Link href="/register" className="btn-primary h-10 px-6 text-sm">
               Sign Up
             </Link>
           </div>
@@ -47,7 +40,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-gray-700"
+            className="md:hidden text-white"
           >
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -55,24 +48,24 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="border-t border-gray-200 bg-white py-4 md:hidden">
+          <div className="border-t border-white/10 bg-black/95 py-4 md:hidden">
             <a
               href="#pricing"
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-50"
+              className="block px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Pricing
             </a>
             <Link
               href="/login"
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-50"
+              className="block px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Login
             </Link>
             <Link
               href="/register"
-              className="mx-4 mt-2 block rounded-full bg-blue-600 px-6 py-2 text-center font-semibold text-white hover:bg-blue-700"
+              className="mx-4 mt-3 block btn-primary text-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Sign Up

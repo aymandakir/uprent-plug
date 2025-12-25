@@ -63,19 +63,19 @@ export function PricingSection({ translations }: PricingSectionProps = {}) {
   const plans = t.plans;
 
   return (
-    <section className="bg-gradient-to-b from-gray-50 to-white py-20 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="bg-neutral-900 py-24 md:py-32">
+      <div className="mx-auto max-w-content px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="mb-12 text-center animate-on-scroll"
+          className="mb-16 text-center animate-on-scroll"
         >
-          <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
+          <h2 className="mb-4 text-h2 font-heading font-bold text-white">
             {t.title}
           </h2>
-          <p className="text-xl text-gray-600">{t.subtitle}</p>
+          <p className="text-body-lg text-white/70">{t.subtitle}</p>
         </motion.div>
 
         <div className="grid gap-8 md:grid-cols-3">
@@ -86,42 +86,42 @@ export function PricingSection({ translations }: PricingSectionProps = {}) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
-              className={`relative rounded-2xl border-2 bg-white p-8 shadow-lg animate-on-scroll ${
+              className={`relative card animate-on-scroll ${
                 plan.popular
-                  ? 'border-blue-600 ring-4 ring-blue-100 scale-105'
-                  : 'border-gray-200 hover:shadow-xl'
+                  ? 'ring-2 ring-white/30 scale-105'
+                  : ''
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold text-white">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-lg bg-white px-4 py-1 text-caption font-medium text-black uppercase tracking-wider">
                   Most Popular
                 </div>
               )}
 
               <div className="mb-6">
-                <h3 className="mb-2 text-2xl font-bold text-gray-900">{plan.name}</h3>
+                <h3 className="mb-2 text-h3 font-heading font-bold text-white">{plan.name}</h3>
                 <div className="mb-2 flex items-baseline gap-1">
-                  <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
-                  <span className="text-gray-600">{plan.period === 'forever' ? 'forever' : plan.period === 'per month' ? '/month' : plan.period}</span>
+                  <span className="text-h1 font-heading font-bold text-white">{plan.price}</span>
+                  <span className="text-body text-white/60">{plan.period === 'forever' ? 'forever' : plan.period === 'per month' ? '/month' : plan.period}</span>
                 </div>
-                <p className="text-gray-600">{plan.description}</p>
+                <p className="text-body-sm text-white/70">{plan.description}</p>
               </div>
 
               <ul className="mb-8 space-y-3">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
-                    <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600" />
-                    <span className="text-gray-700">{feature}</span>
+                    <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-white" />
+                    <span className="text-body text-white/80">{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <Link
                 href="/register"
-                className={`flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold transition-all duration-200 ${
+                className={`flex w-full items-center justify-center gap-2 ${
                   plan.popular
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    ? 'btn-primary'
+                    : 'btn-secondary'
                 }`}
               >
                 {plan.cta}
@@ -137,7 +137,7 @@ export function PricingSection({ translations }: PricingSectionProps = {}) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            className="mt-8 text-center text-sm text-gray-600 animate-on-scroll"
+            className="mt-8 text-center text-body-sm text-white/60 animate-on-scroll"
           >
             {t.disclaimer}
           </motion.p>

@@ -49,16 +49,16 @@ export function FAQSection({ translations }: FAQSectionProps = {}) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="bg-white py-20 md:py-32">
-      <div className="mx-auto max-w-4xl px-6">
+    <section className="bg-black py-24 md:py-32">
+      <div className="mx-auto max-w-narrow px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="mb-12 text-center animate-on-scroll"
+          className="mb-16 text-center animate-on-scroll"
         >
-          <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
+          <h2 className="text-h2 font-heading font-bold text-white">
             {t.title}
           </h2>
         </motion.div>
@@ -71,15 +71,15 @@ export function FAQSection({ translations }: FAQSectionProps = {}) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.05 }}
-              className="overflow-hidden rounded-xl border border-gray-200 bg-white animate-on-scroll"
+              className="overflow-hidden rounded-lg border border-white/10 bg-neutral-900 animate-on-scroll"
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-gray-50"
+                className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-white/5"
               >
-                <span className="text-lg font-semibold text-gray-900">{faq.question}</span>
+                <span className="text-body-lg font-medium text-white">{faq.question}</span>
                 <ChevronDown
-                  className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${
+                  className={`h-5 w-5 text-white/60 transition-transform duration-200 ${
                     openIndex === index ? 'rotate-180' : ''
                   }`}
                 />
@@ -93,7 +93,7 @@ export function FAQSection({ translations }: FAQSectionProps = {}) {
                     transition={{ duration: 0.3, ease: 'easeOut' }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-6 text-gray-700">{faq.answer}</div>
+                    <div className="px-6 pb-6 text-body text-white/70">{faq.answer}</div>
                   </motion.div>
                 )}
               </AnimatePresence>

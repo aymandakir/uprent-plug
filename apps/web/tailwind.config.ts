@@ -10,38 +10,68 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: "#EFF6FF",
-          100: "#DBEAFE",
-          200: "#BFDBFE",
-          300: "#93C5FD",
-          400: "#60A5FA",
-          500: "#3B82F6",
-          600: "#2563EB",
-          700: "#1D4ED8",
-          800: "#1E40AF",
-          900: "#1E3A8A"
+        // Primary Black & White Palette
+        black: {
+          DEFAULT: "#000000",
+          pure: "#000000",
         },
+        white: {
+          DEFAULT: "#FFFFFF",
+          pure: "#FFFFFF",
+        },
+        neutral: {
+          50: "#FAFAFA",
+          100: "#F5F5F5",
+          800: "#1F1F1F",
+          900: "#0A0A0A",
+        },
+        // Accent Colors (Minimal use)
         accent: {
-          50: "#F0FDFA",
-          100: "#CCFBF1",
-          200: "#99F6E4",
-          300: "#5EEAD4",
-          400: "#4ECDC4",
-          500: "#2DD4BF",
-          600: "#14B8A6",
-          700: "#0D9488",
-          800: "#0F766E",
-          900: "#115E59"
+          blue: "#3B82F6",
+          violet: "#8B5CF6",
+          red: "#EF4444",
         },
-        warning: {
-          400: "#FFE66D",
-          500: "#FBBF24"
-        }
+        // Legacy brand colors for compatibility
+        brand: {
+          50: "#FAFAFA",
+          100: "#F5F5F5",
+          400: "#3B82F6",
+          500: "#3B82F6",
+          800: "#1F1F1F",
+          900: "#0A0A0A",
+        },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Cal Sans", "Inter", "sans-serif"]
+        display: ["Space Grotesk", "Inter", "sans-serif"],
+        heading: ["Space Grotesk", "Inter", "sans-serif"],
+        mono: ["JetBrains Mono", "Consolas", "monospace"],
+      },
+      fontSize: {
+        // Typography Scale
+        'hero': ['72px', { lineHeight: '1', fontWeight: '900', letterSpacing: '-0.02em' }],
+        'h1': ['48px', { lineHeight: '1.1', fontWeight: '700', letterSpacing: '-0.01em' }],
+        'h2': ['36px', { lineHeight: '1.2', fontWeight: '700', letterSpacing: '-0.005em' }],
+        'h3': ['24px', { lineHeight: '1.3', fontWeight: '600', letterSpacing: '0' }],
+        'h4': ['20px', { lineHeight: '1.4', fontWeight: '600', letterSpacing: '0' }],
+        'body-lg': ['18px', { lineHeight: '1.6', fontWeight: '400', letterSpacing: '0' }],
+        'body': ['16px', { lineHeight: '1.6', fontWeight: '400', letterSpacing: '0' }],
+        'body-sm': ['14px', { lineHeight: '1.5', fontWeight: '400', letterSpacing: '0' }],
+        'caption': ['12px', { lineHeight: '1.4', fontWeight: '500', letterSpacing: '0.02em' }],
+      },
+      spacing: {
+        // 8px Grid System
+        'micro': '4px',
+        'tiny': '8px',
+        'hero': '128px',
+      },
+      maxWidth: {
+        'content': '1200px',
+        'narrow': '800px',
+        'form': '600px',
+      },
+      borderRadius: {
+        'card': '12px',
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-in-out",
@@ -68,8 +98,12 @@ const config: Config = {
         }
       },
       boxShadow: {
-        glass: "0 8px 32px 0 rgba(255, 107, 107, 0.1)",
-        glow: "0 0 20px rgba(78, 205, 196, 0.3)"
+        glass: "0 8px 32px 0 rgba(0, 0, 0, 0.1)",
+        glow: "0 4px 24px rgba(0, 0, 0, 0.4)",
+        'card-hover': "0 8px 32px rgba(0, 0, 0, 0.12)",
+      },
+      backdropBlur: {
+        'nav': '12px',
       }
     }
   },

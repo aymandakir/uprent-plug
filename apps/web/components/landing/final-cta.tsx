@@ -21,22 +21,14 @@ export function FinalCTA({ translations }: FinalCTAProps = {}) {
   const t = translations || defaultT;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 py-20 md:py-32">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-          backgroundSize: '40px 40px'
-        }} />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
+    <section className="relative overflow-hidden bg-neutral-900 py-24 md:py-32">
+      <div className="relative z-10 mx-auto max-w-narrow px-6 text-center">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="mb-6 text-4xl font-bold text-white md:text-5xl animate-on-scroll"
+          className="mb-6 text-h2 font-heading font-bold text-white animate-on-scroll"
         >
           {t.title}
         </motion.h2>
@@ -45,7 +37,7 @@ export function FinalCTA({ translations }: FinalCTAProps = {}) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
-          className="mb-8 text-xl text-blue-100 animate-on-scroll"
+          className="mb-12 text-body-lg text-white/70 animate-on-scroll"
         >
           {t.subtitle}
         </motion.p>
@@ -61,14 +53,14 @@ export function FinalCTA({ translations }: FinalCTAProps = {}) {
             href="https://uprent.nl"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-lg font-semibold text-blue-600 shadow-2xl transition-all duration-200 hover:scale-105 hover:shadow-3xl"
+            className="btn-primary inline-flex items-center gap-2"
           >
             {t.cta}
             <ArrowRight className="h-5 w-5" />
           </Link>
           <Link
             href="/register"
-            className="text-sm text-blue-100 hover:text-white underline"
+            className="text-body-sm text-white/60 hover:text-white underline transition-colors"
           >
             {t.demoLink}
           </Link>
@@ -80,7 +72,7 @@ export function FinalCTA({ translations }: FinalCTAProps = {}) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.4, ease: 'easeOut', delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-6 text-sm text-blue-100 animate-on-scroll"
+            className="flex flex-wrap items-center justify-center gap-6 text-body-sm text-white/60 animate-on-scroll"
           >
             {t.disclaimer.split(' - ').map((item) => (
               <div key={item} className="flex items-center gap-2">

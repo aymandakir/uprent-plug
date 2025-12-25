@@ -23,12 +23,12 @@ export function LogoBar({ translations }: LogoBarProps = {}) {
   const t = translations || defaultT;
 
   return (
-    <section className="border-b border-gray-200 bg-gray-50 py-12">
-      <div className="mx-auto max-w-7xl px-6">
-        <p className="mb-8 text-center text-sm font-medium text-gray-600">
+    <section className="border-b border-white/10 bg-neutral-900 py-16">
+      <div className="mx-auto max-w-content px-6">
+        <p className="mb-12 text-center text-body-sm font-medium text-white/60">
           {t.title}
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+        <div className="flex flex-wrap items-center justify-center gap-12 md:gap-16">
           {universities.map((uni, index) => (
             <motion.div
               key={uni.name}
@@ -36,12 +36,12 @@ export function LogoBar({ translations }: LogoBarProps = {}) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
-              className="flex flex-col items-center gap-2 transition-all duration-300 hover:scale-110 animate-on-scroll"
+              className="flex flex-col items-center gap-3 transition-all duration-300 hover:scale-110 animate-on-scroll"
             >
-              <div className="text-4xl grayscale transition-all duration-300 hover:grayscale-0">
+              <div className="text-4xl grayscale transition-all duration-300 hover:grayscale-0 opacity-60 hover:opacity-100">
                 {uni.logo}
               </div>
-              <span className="text-sm font-semibold text-gray-700">{uni.name}</span>
+              <span className="text-caption font-medium text-white/60 uppercase tracking-wider">{uni.name}</span>
             </motion.div>
           ))}
         </div>

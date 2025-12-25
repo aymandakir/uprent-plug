@@ -69,8 +69,8 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
   const property = mockProperties[currentProperty];
 
   return (
-    <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="relative bg-black py-24 md:py-32">
+      <div className="mx-auto max-w-content px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -78,21 +78,21 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
           transition={{ duration: 0.5, ease: 'easeOut' }}
           className="mb-12 text-center animate-on-scroll"
         >
-          <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
+          <h2 className="mb-4 text-h2 font-heading font-bold text-white">
             {t.title}
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-body-lg text-white/70">
             {t.subtitle}
           </p>
         </motion.div>
 
         <div className="relative mx-auto max-w-4xl">
           {/* Property Feed Card */}
-          <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-2xl">
+          <div className="card">
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="text-2xl font-bold text-gray-900">Property Feed</h3>
-              <div className="flex items-center gap-2 text-sm text-green-600">
-                <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
+              <h3 className="text-h3 font-heading font-semibold text-white">Property Feed</h3>
+              <div className="flex items-center gap-2 text-body-sm text-electric-blue">
+                <div className="h-2 w-2 animate-pulse rounded-full bg-electric-blue"></div>
                 {t.live}
               </div>
             </div>
@@ -106,18 +106,18 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
                 transition={{ duration: 0.3, ease: 'easeOut' }}
                 className="space-y-4"
               >
-                <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
+                <div className="rounded-lg border border-white/10 bg-white/5 p-6">
                   <div className="mb-2 flex items-start justify-between">
                     <div>
-                      <h4 className="text-xl font-semibold text-gray-900">{property.title}</h4>
-                      <p className="text-gray-600">{property.city}</p>
+                      <h4 className="text-h4 font-heading font-semibold text-white">{property.title}</h4>
+                      <p className="text-body-sm text-white/60">{property.city}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-blue-600">€{property.price}</p>
-                      <p className="text-sm text-gray-500">/month</p>
+                      <p className="text-2xl font-heading font-bold text-white">€{property.price}</p>
+                      <p className="text-body-sm text-white/50">/month</p>
                     </div>
                   </div>
-                  <div className="mt-4 flex gap-4 text-sm text-gray-600">
+                  <div className="mt-4 flex gap-4 text-body-sm text-white/70">
                     <span>🛏️ {property.bedrooms} bedrooms</span>
                     <span>📐 {property.area}m²</span>
                   </div>
@@ -127,9 +127,9 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
 
             <button
               onClick={() => setShowLetterModal(true)}
-              className="mt-6 w-full rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-purple-700"
+              className="mt-6 w-full btn-primary flex items-center justify-center gap-2"
             >
-              <FileText className="mr-2 inline h-5 w-5" />
+              <FileText className="h-5 w-5" />
               {t.cta}
             </button>
           </div>
@@ -141,13 +141,13 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
                 initial={{ opacity: 0, scale: 0.8, x: 100, y: -100 }}
                 animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="absolute right-0 top-0 rounded-xl bg-blue-600 p-4 shadow-2xl"
+                className="absolute right-0 top-0 rounded-lg border border-white/20 bg-electric-blue p-4 shadow-glow"
               >
                 <div className="flex items-center gap-3 text-white">
-                  <Bell className="h-6 w-6" />
+                  <Bell className="h-5 w-5" />
                   <div>
-                    <p className="font-semibold">{t.notification.replace('{city}', property.city)}</p>
-                    <p className="text-sm text-blue-100">€{property.price}/month</p>
+                    <p className="text-body-sm font-medium">{t.notification.replace('{city}', property.city)}</p>
+                    <p className="text-caption text-white/70">€{property.price}/month</p>
                   </div>
                 </div>
               </motion.div>
@@ -163,10 +163,7 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
           className="mt-12 text-center animate-on-scroll"
         >
-          <Link
-            href="/register"
-            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-700 hover:shadow-xl"
-          >
+          <Link href="/register" className="btn-primary inline-flex items-center gap-2">
             Start Free Trial
             <ArrowRight className="h-5 w-5" />
           </Link>
@@ -176,18 +173,18 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
       {/* Letter Modal */}
       {showLetterModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-6 backdrop-blur-sm"
           onClick={() => setShowLetterModal(false)}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="max-w-2xl rounded-2xl bg-white p-8 shadow-2xl"
+            className="card max-w-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="mb-4 text-2xl font-bold text-gray-900">AI Generated Letter</h3>
-            <div className="mb-6 max-h-96 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 p-6">
-              <p className="text-gray-700">
+            <h3 className="mb-4 text-h3 font-heading font-bold text-white">AI Generated Letter</h3>
+            <div className="mb-6 max-h-96 overflow-y-auto rounded-lg border border-white/10 bg-white/5 p-6">
+              <p className="text-body text-white/80">
                 Dear Landlord,
                 <br />
                 <br />
@@ -212,7 +209,7 @@ export function InteractiveDemo({ translations }: InteractiveDemoProps = {}) {
             </div>
             <button
               onClick={() => setShowLetterModal(false)}
-              className="w-full rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+              className="btn-primary w-full"
             >
               Close
             </button>

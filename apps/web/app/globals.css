@@ -20,18 +20,34 @@
 @layer base {
   :root {
     --radius: 0.5rem;
-    --background: 255 255 255;
-    --foreground: 17 24 39;
-    --border: 229 231 235;
+    --background: 0 0 0;
+    --foreground: 255 255 255;
+    --border: 255 255 255;
+    --border-opacity: 0.1;
+    
+    --font-inter: var(--font-inter);
+    --font-space-grotesk: var(--font-space-grotesk);
+    --font-mono: var(--font-mono);
   }
 
   * {
-    @apply border-gray-200;
+    @apply border-white/10;
   }
 
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-black text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-inter), system-ui, sans-serif;
+    background: linear-gradient(135deg, #000000 0%, #1F1F1F 100%);
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  }
+
+  code, pre {
+    font-family: var(--font-mono), Consolas, monospace;
   }
 
   /* Custom scrollbar */
@@ -43,24 +59,85 @@
     @apply bg-transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full;
+    @apply bg-white/20 rounded-full;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400;
+    @apply bg-white/30;
   }
 }
 
 @layer components {
+  /* Glass morphism effect */
   .glass {
-    @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-glass;
+    @apply bg-neutral-900/80 backdrop-blur-nav border border-white/10 shadow-glass;
   }
 
+  /* Buttons - ElevenLabs Style */
   .btn-primary {
-    @apply bg-brand-400 hover:bg-brand-500 text-white font-semibold rounded-full px-6 py-3 transition-all duration-200 hover:scale-105 hover:shadow-glow;
+    @apply bg-white text-black font-display font-medium text-base h-12 px-6 rounded-lg;
+    @apply transition-all duration-150 ease-out;
+    @apply hover:scale-[1.02] active:scale-[0.98];
+    @apply focus:outline-none focus:ring-2 focus:ring-white/50;
+  }
+
+  .btn-primary-dark {
+    @apply bg-black text-white border border-white;
+    @apply hover:bg-white/10;
   }
 
   .btn-secondary {
-    @apply bg-accent-400 hover:bg-accent-500 text-white font-semibold rounded-full px-6 py-3 transition-all duration-200;
+    @apply border border-white bg-transparent text-white font-display font-medium text-base h-12 px-6 rounded-lg;
+    @apply transition-all duration-150 ease-out;
+    @apply hover:bg-white/10 active:scale-[0.98];
+    @apply focus:outline-none focus:ring-2 focus:ring-white/50;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-white font-display font-medium text-base h-12 px-6 rounded-lg;
+    @apply transition-all duration-150 ease-out;
+    @apply hover:bg-white/5 active:scale-[0.98];
+    @apply focus:outline-none focus:ring-2 focus:ring-white/50;
+  }
+
+  /* Cards - ElevenLabs Style */
+  .card {
+    @apply bg-neutral-900 border border-white/10 rounded-card p-6;
+    @apply transition-all duration-200 ease-out;
+    @apply hover:transform hover:-translate-y-1 hover:shadow-glow;
+  }
+
+  .card-light {
+    @apply bg-white border border-black/10 text-black;
+  }
+
+  /* Inputs - ElevenLabs Style */
+  .input {
+    @apply h-12 bg-white/5 border border-white/10 rounded-lg px-4;
+    @apply text-white placeholder-white/50;
+    @apply font-sans text-base;
+    @apply transition-all duration-150 ease-out;
+    @apply focus:outline-none focus:border-white/30 focus:scale-[1.01] focus:ring-1 focus:ring-white/20;
+  }
+
+  .input-light {
+    @apply bg-black/3 border-black/10 text-black placeholder-black/50;
+    @apply focus:border-black/30 focus:ring-black/20;
+  }
+
+  /* Navigation - ElevenLabs Style */
+  .nav {
+    @apply h-16 bg-black/80 border-b border-white/10 sticky top-0 z-50;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Gradients - ElevenLabs Style */
+  .gradient-hero {
+    background: linear-gradient(135deg, #000000 0%, #1F1F1F 100%);
+  }
+
+  .gradient-card-hover {
+    background: linear-gradient(135deg, #0A0A0A 0%, #000000 100%);
   }
 }
 

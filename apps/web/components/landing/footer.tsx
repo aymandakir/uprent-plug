@@ -43,15 +43,15 @@ export function Footer({ translations }: FooterProps = {}) {
   const t = translations || defaultT;
 
   return (
-    <footer className="border-t border-gray-200 bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid gap-8 md:grid-cols-4">
+    <footer className="border-t border-white/10 bg-black">
+      <div className="mx-auto max-w-content px-6 py-16">
+        <div className="grid gap-12 md:grid-cols-4">
           {/* Logo */}
           <div className="md:col-span-1">
-            <Link href="/" className="text-2xl font-bold text-gray-900">
-              🏠 Uprent Plus
+            <Link href="/" className="text-2xl font-heading font-bold text-white">
+              Uprent Plus
             </Link>
-            <p className="mt-4 text-sm text-gray-600">
+            <p className="mt-4 text-body-sm text-white/60">
               {t.tagline}
             </p>
           </div>
@@ -59,13 +59,13 @@ export function Footer({ translations }: FooterProps = {}) {
           {/* Links */}
           {Object.entries(t.links).map(([key, section]) => (
             <div key={key}>
-              <h3 className="mb-4 font-semibold text-gray-900">{section.title}</h3>
-              <ul className="space-y-2">
-                {section.items.map((link) => (
+              <h3 className="mb-4 text-body-sm font-medium text-white uppercase tracking-wider">{section.title}</h3>
+              <ul className="space-y-3">
+                {section.items.map((link: { label: string; href: string }) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                      className="text-body-sm text-white/60 hover:text-white transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -77,12 +77,12 @@ export function Footer({ translations }: FooterProps = {}) {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-8 md:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 md:flex-row">
           <div className="flex flex-col items-center md:items-start gap-2">
-            <p className="text-sm text-gray-600">
+            <p className="text-body-sm text-white/60">
               {t.copyright} {t.attribution}
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-caption text-white/50">
               {t.disclaimer}
             </p>
           </div>

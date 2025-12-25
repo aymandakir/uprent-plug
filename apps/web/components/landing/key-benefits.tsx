@@ -39,15 +39,15 @@ export function KeyBenefits({ translations }: KeyBenefitsProps = {}) {
   const t = translations || defaultT;
 
   return (
-    <section className="py-20 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="py-24 md:py-32">
+      <div className="mx-auto max-w-content px-6">
         {t.title && (
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="mb-12 text-center text-4xl font-bold text-gray-900 md:text-5xl animate-on-scroll"
+            className="mb-16 text-center text-h2 font-heading font-bold text-white animate-on-scroll"
           >
             {t.title}
           </motion.h2>
@@ -62,13 +62,13 @@ export function KeyBenefits({ translations }: KeyBenefitsProps = {}) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.5, ease: 'easeOut', delay: index * 0.1 }}
-                className="group rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-all duration-300 hover:shadow-xl animate-on-scroll"
+                className="card group animate-on-scroll"
               >
-                <div className="mb-4 inline-flex rounded-xl bg-blue-100 p-3 text-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white">
+                <div className="mb-6 inline-flex rounded-lg bg-white/5 p-3 text-white transition-all duration-300 group-hover:scale-110 group-hover:bg-white group-hover:text-black border border-white/10 group-hover:border-white/20">
                   <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="mb-3 text-2xl font-bold text-gray-900">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
+                <h3 className="mb-3 text-h3 font-heading font-semibold text-white">{benefit.title}</h3>
+                <p className="text-body text-white/70">{benefit.description}</p>
               </motion.div>
             );
           })}
