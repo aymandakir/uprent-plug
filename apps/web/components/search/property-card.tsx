@@ -34,7 +34,11 @@ export function PropertyCard({
   };
 
   const images = property.images || property.photos || [];
-  const currentImage = images[currentImageIndex] || '/placeholder-property.jpg';
+  // Use Unsplash placeholder for properties without images
+  const placeholderImage = `https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop&q=80`;
+  const currentImage = images.length > 0 && images[currentImageIndex] 
+    ? images[currentImageIndex] 
+    : placeholderImage;
   const price = property.price_monthly || property.price || 0;
   const city = property.city || '';
   const neighborhood = property.neighborhood || '';
@@ -50,18 +54,13 @@ export function PropertyCard({
           <div className="flex gap-6">
             {/* Image */}
             <div className="relative w-48 h-48 flex-shrink-0 rounded-lg overflow-hidden bg-white/5">
-              {images.length > 0 ? (
-                <Image
-                  src={currentImage}
-                  alt={property.title || 'Property'}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-white/40">
-                  No image
-                </div>
-              )}
+              <Image
+                src={currentImage}
+                alt={property.title || 'Property'}
+                fill
+                className="object-cover"
+                unoptimized={!images.length || images.length === 0}
+              />
               {matchScore && (
                 <div className="absolute top-2 left-2 rounded-full bg-electric-blue px-2 py-1 text-caption font-medium text-white">
                   {matchScore}% match
@@ -150,36 +149,29 @@ export function PropertyCard({
       <div className={cn('card group cursor-pointer', className)}>
         {/* Image */}
         <div className="relative aspect-[4/3] rounded-lg overflow-hidden bg-white/5 mb-4">
-          {images.length > 0 ? (
-            <>
-              <Image
-                src={currentImage}
-                alt={property.title || 'Property'}
-                fill
-                className="object-cover transition-transform duration-200 group-hover:scale-105"
-              />
-              {images.length > 1 && (
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
-                  {images.slice(0, 6).map((_: any, idx: number) => (
-                    <button
-                      key={idx}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setCurrentImageIndex(idx);
-                      }}
-                      className={cn(
-                        'h-2 rounded-full transition-all',
-                        idx === currentImageIndex ? 'w-6 bg-white' : 'w-2 bg-white/50'
-                      )}
-                    />
-                  ))}
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-white/40">
-              No image
+          <Image
+            src={currentImage}
+            alt={property.title || 'Property'}
+            fill
+            className="object-cover transition-transform duration-200 group-hover:scale-105"
+            unoptimized={!images.length || images.length === 0}
+          />
+          {images.length > 1 && (
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
+              {images.slice(0, 6).map((_: any, idx: number) => (
+                <button
+                  key={idx}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setCurrentImageIndex(idx);
+                  }}
+                  className={cn(
+                    'h-2 rounded-full transition-all',
+                    idx === currentImageIndex ? 'w-6 bg-white' : 'w-2 bg-white/50'
+                  )}
+                />
+              ))}
             </div>
           )}
 
