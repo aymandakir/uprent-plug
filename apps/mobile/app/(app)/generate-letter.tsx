@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { storage, type DraftLetterData } from '@/utils/storage';
 import {
   View,
   Text,
@@ -6,11 +7,10 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Alert,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as Sharing from 'expo-sharing';
@@ -20,6 +20,7 @@ import { useUserProfile } from '@/hooks/use-user-profile';
 import { useProperty } from '@/hooks/use-property';
 import { useToast } from '@/hooks/use-toast';
 import { useNetwork } from '@/hooks/use-network';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 const LANGUAGES = [
   { code: 'nl', name: 'Dutch' },
@@ -51,7 +52,6 @@ const LENGTHS = [
 ] as const;
 
 export default function GenerateLetterScreen() {
-  const router = useRouter();
   const { propertyId } = useLocalSearchParams<{ propertyId?: string }>();
   const { data: property } = useProperty(propertyId || '');
   const { data: userProfile } = useUserProfile();
@@ -70,11 +70,46 @@ export default function GenerateLetterScreen() {
   const toast = useToast();
   const { isOffline } = useNetwork();
 
+  // Load draft data on mount
   useEffect(() => {
-    if (userProfile?.full_name) {
-      setFullName(userProfile.full_name);
-    }
-  }, [userProfile]);
+    const loadDraft = async () => {
+      const draft = await storage.loadDraftLetter();
+      if (draft && draft.propertyId === propertyId) {
+        setLanguage(draft.language);
+        setTone(draft.tone);
+        setLength(draft.length);
+        setKeyPoints(draft.keyPoints);
+        setFullName(draft.fullName);
+        setOccupation(draft.occupation);
+        setIncome(draft.income);
+      } else if (userProfile?.full_name) {
+        setFullName(userProfile.full_name);
+      }
+    };
+    loadDraft();
+  }, [userProfile, propertyId]);
+
+  // Save draft data when form changes (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (propertyId) {
+        const draft: DraftLetterData = {
+          propertyId,
+          language,
+          tone,
+          length,
+          keyPoints,
+          fullName,
+          occupation,
+          income,
+          timestamp: new Date().toISOString(),
+        };
+        storage.saveDraftLetter(draft).catch(console.error);
+      }
+    }, 1000); // Debounce: save 1 second after last change
+
+    return () => clearTimeout(timeoutId);
+  }, [propertyId, language, tone, length, keyPoints, fullName, occupation, income]);
 
   const handleGenerate = async () => {
     if (!propertyId) {
@@ -99,6 +134,8 @@ export default function GenerateLetterScreen() {
       });
 
       setGeneratedLetter(response.content);
+      // Clear draft after successful generation
+      await storage.clearDraftLetter();
       toast.show.success('Letter generated successfully');
     } catch (error: any) {
       toast.show.error(
@@ -119,9 +156,7 @@ export default function GenerateLetterScreen() {
   const handleShare = async () => {
     if (!generatedLetter) return;
     try {
-      await Sharing.shareAsync({
-        message: generatedLetter,
-      });
+      await Sharing.shareAsync(generatedLetter);
     } catch (error) {
       console.error('Error sharing:', error);
     }
@@ -142,226 +177,235 @@ export default function GenerateLetterScreen() {
   const selectedLanguage = LANGUAGES.find((l) => l.code === language)?.name || 'Dutch';
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#ffffff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Generate Letter</Text>
-        <View style={{ width: 40 }} />
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Property Context */}
-        {property && (
-          <View style={styles.propertyContext}>
-            <Text style={styles.propertyContextLabel}>Property</Text>
-            <Text style={styles.propertyContextText}>{property.address}</Text>
-            {property.price_monthly && (
-              <Text style={styles.propertyContextSubtext}>
-                €{property.price_monthly.toLocaleString()}/month
-              </Text>
-            )}
-          </View>
-        )}
-
-        {/* Form */}
-        {!generatedLetter ? (
-          <>
-            {/* Language Selector */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Language</Text>
-              <TouchableOpacity
-                style={styles.picker}
-                onPress={() => setShowLanguagePicker(!showLanguagePicker)}
-              >
-                <Text style={styles.pickerText}>{selectedLanguage}</Text>
-                <Ionicons name="chevron-down" size={20} color="#888888" />
-              </TouchableOpacity>
-              {showLanguagePicker && (
-                <View style={styles.languageList}>
-                  <ScrollView style={styles.languageScroll}>
-                    {LANGUAGES.map((lang) => (
-                      <TouchableOpacity
-                        key={lang.code}
-                        style={[
-                          styles.languageOption,
-                          language === lang.code && styles.languageOptionActive,
-                        ]}
-                        onPress={() => {
-                          setLanguage(lang.code);
-                          setShowLanguagePicker(false);
-                        }}
-                      >
-                        <Text
-                          style={[
-                            styles.languageOptionText,
-                            language === lang.code && styles.languageOptionTextActive,
-                          ]}
-                        >
-                          {lang.name}
-                        </Text>
-                        {language === lang.code && (
-                          <Ionicons name="checkmark" size={20} color="#ffffff" />
-                        )}
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
-                </View>
-              )}
-            </View>
-
-            {/* Tone Selection */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Tone</Text>
-              <View style={styles.optionsRow}>
-                {TONES.map((t) => (
-                  <TouchableOpacity
-                    key={t.value}
-                    style={[styles.optionButton, tone === t.value && styles.optionButtonActive]}
-                    onPress={() => setTone(t.value)}
-                  >
-                    <Text
-                      style={[
-                        styles.optionButtonText,
-                        tone === t.value && styles.optionButtonTextActive,
-                      ]}
-                    >
-                      {t.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            {/* Length Selection */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Length</Text>
-              <View style={styles.optionsColumn}>
-                {LENGTHS.map((l) => (
-                  <TouchableOpacity
-                    key={l.value}
-                    style={[styles.optionButton, length === l.value && styles.optionButtonActive]}
-                    onPress={() => setLength(l.value)}
-                  >
-                    <Text
-                      style={[
-                        styles.optionButtonText,
-                        length === l.value && styles.optionButtonTextActive,
-                      ]}
-                    >
-                      {l.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            {/* Personal Info */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Personal Information</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Full Name"
-                placeholderTextColor="#666666"
-                value={fullName}
-                onChangeText={setFullName}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Occupation"
-                placeholderTextColor="#666666"
-                value={occupation}
-                onChangeText={setOccupation}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Monthly Income (optional)"
-                placeholderTextColor="#666666"
-                value={income}
-                onChangeText={setIncome}
-                keyboardType="numeric"
-              />
-            </View>
-
-            {/* Key Points */}
-            <View style={styles.section}>
-              <Text style={styles.label}>Key Points to Mention</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                placeholder="e.g., Current living situation, employment, why this property..."
-                placeholderTextColor="#666666"
-                value={keyPoints}
-                onChangeText={setKeyPoints}
-                multiline
-                numberOfLines={4}
-                textAlignVertical="top"
-              />
-            </View>
-
-            {/* Generate Button */}
-            <TouchableOpacity
-              style={[styles.generateButton, (isGenerating || !propertyId || isOffline) && styles.generateButtonDisabled]}
-              onPress={handleGenerate}
-              disabled={isGenerating || !propertyId || isOffline}
-            >
-              {isGenerating ? (
-                <LoadingSpinner message="" />
-              ) : (
-                <Text style={styles.generateButtonText}>
-                  {isOffline ? 'Requires Internet' : 'Generate Letter'}
+    <>
+      <Stack.Screen
+        options={{
+          title: 'Generate Application Letter',
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000000' },
+          headerTintColor: '#ffffff',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Property Context */}
+          {property && (
+            <View style={styles.propertyContext}>
+              <Text style={styles.propertyContextLabel}>Property</Text>
+              <Text style={styles.propertyContextText}>{property.address}</Text>
+              {property.price_monthly && (
+                <Text style={styles.propertyContextSubtext}>
+                  €{property.price_monthly.toLocaleString()}/month
                 </Text>
               )}
-            </TouchableOpacity>
-          </>
-        ) : (
-          /* Preview */
-          <>
-            <View style={styles.previewHeader}>
-              <Text style={styles.previewTitle}>Generated Letter</Text>
-              <Text style={styles.previewCharCount}>
-                {generatedLetter.length} characters
-              </Text>
             </View>
+          )}
 
-            <TextInput
-              style={[styles.input, styles.textArea, styles.previewText]}
-              value={generatedLetter}
-              onChangeText={setGeneratedLetter}
-              multiline
-              textAlignVertical="top"
-              editable
-            />
+          {/* Form */}
+          {!generatedLetter ? (
+            <>
+              {/* Language Selector */}
+              <View style={styles.section}>
+                <Text style={styles.label}>Language</Text>
+                <TouchableOpacity
+                  style={styles.picker}
+                  onPress={() => setShowLanguagePicker(!showLanguagePicker)}
+                >
+                  <Text style={styles.pickerText}>{selectedLanguage}</Text>
+                  <Ionicons name="chevron-down" size={20} color="#888888" />
+                </TouchableOpacity>
+                {showLanguagePicker && (
+                  <View style={styles.languageList}>
+                    <ScrollView style={styles.languageScroll}>
+                      {LANGUAGES.map((lang) => (
+                        <TouchableOpacity
+                          key={lang.code}
+                          style={[
+                            styles.languageOption,
+                            language === lang.code && styles.languageOptionActive,
+                          ]}
+                          onPress={() => {
+                            setLanguage(lang.code);
+                            setShowLanguagePicker(false);
+                          }}
+                        >
+                          <Text
+                            style={[
+                              styles.languageOptionText,
+                              language === lang.code && styles.languageOptionTextActive,
+                            ]}
+                          >
+                            {lang.name}
+                          </Text>
+                          {language === lang.code && (
+                            <Ionicons name="checkmark" size={20} color="#ffffff" />
+                          )}
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+              )}
+              </View>
 
-            {/* Actions */}
-            <View style={styles.actionsRow}>
-              <TouchableOpacity style={styles.actionButton} onPress={handleCopy}>
-                <Ionicons name="copy-outline" size={20} color="#ffffff" />
-                <Text style={styles.actionButtonText}>Copy</Text>
+              {/* Tone Selection */}
+              <View style={styles.section}>
+                <Text style={styles.label}>Tone</Text>
+                <View style={styles.optionsRow}>
+                  {TONES.map((t) => (
+                    <TouchableOpacity
+                      key={t.value}
+                      style={[styles.optionButton, tone === t.value && styles.optionButtonActive]}
+                      onPress={() => setTone(t.value)}
+                    >
+                      <Text
+                        style={[
+                          styles.optionButtonText,
+                          tone === t.value && styles.optionButtonTextActive,
+                        ]}
+                      >
+                        {t.label}
+                      </Text>
+                    </TouchableOpacity>
+                ))}
+                </View>
+              </View>
+
+              {/* Length Selection */}
+              <View style={styles.section}>
+                <Text style={styles.label}>Length</Text>
+                <View style={styles.optionsColumn}>
+                  {LENGTHS.map((l) => (
+                    <TouchableOpacity
+                      key={l.value}
+                      style={[styles.optionButton, length === l.value && styles.optionButtonActive]}
+                      onPress={() => setLength(l.value)}
+                    >
+                      <Text
+                        style={[
+                          styles.optionButtonText,
+                          length === l.value && styles.optionButtonTextActive,
+                        ]}
+                      >
+                        {l.label}
+                      </Text>
+                    </TouchableOpacity>
+                ))}
+                </View>
+              </View>
+
+              {/* Personal Info */}
+              <View style={styles.section}>
+                <Text style={styles.label}>Personal Information</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Full Name"
+                  placeholderTextColor="#666666"
+                  value={fullName}
+                  onChangeText={setFullName}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Occupation"
+                  placeholderTextColor="#666666"
+                  value={occupation}
+                  onChangeText={setOccupation}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Monthly Income (optional)"
+                  placeholderTextColor="#666666"
+                  value={income}
+                  onChangeText={setIncome}
+                keyboardType="numeric"
+              />
+              </View>
+
+              {/* Key Points */}
+              <View style={styles.section}>
+                <Text style={styles.label}>Key Points to Mention</Text>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  placeholder="e.g., Current living situation, employment, why this property..."
+                  placeholderTextColor="#666666"
+                  value={keyPoints}
+                  onChangeText={setKeyPoints}
+                  multiline
+                  numberOfLines={4}
+                textAlignVertical="top"
+              />
+              </View>
+
+              {/* Generate Button */}
+              <TouchableOpacity
+                style={[styles.generateButton, (isGenerating || !propertyId || isOffline) && styles.generateButtonDisabled]}
+                onPress={handleGenerate}
+                disabled={isGenerating || !propertyId || isOffline}
+              >
+                {isGenerating ? (
+                  <LoadingSpinner message="" />
+                ) : (
+                  <Text style={styles.generateButtonText}>
+                    {isOffline ? 'Requires Internet' : 'Generate Letter'}
+                  </Text>
+                )}
               </TouchableOpacity>
+            </>
+          ) : (
+            /* Preview */
+            <>
+              <View style={styles.previewHeader}>
+                <Text style={styles.previewTitle}>Generated Letter</Text>
+                <Text style={styles.previewCharCount}>
+                  {generatedLetter.length} characters
+                </Text>
+              </View>
 
-              <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-                <Ionicons name="share-outline" size={20} color="#ffffff" />
-                <Text style={styles.actionButtonText}>Share</Text>
+              <TextInput
+                style={[styles.input, styles.textArea, styles.previewText]}
+                value={generatedLetter}
+                onChangeText={setGeneratedLetter}
+                multiline
+                textAlignVertical="top"
+                editable
+              />
+
+              {/* Actions */}
+              <View style={styles.actionsRow}>
+                <TouchableOpacity style={styles.actionButton} onPress={handleCopy}>
+                  <Ionicons name="copy-outline" size={20} color="#ffffff" />
+                  <Text style={styles.actionButtonText}>Copy</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
+                  <Ionicons name="share-outline" size={20} color="#ffffff" />
+                  <Text style={styles.actionButtonText}>Share</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.actionButton} onPress={handleEmail}>
+                  <Ionicons name="mail-outline" size={20} color="#ffffff" />
+                  <Text style={styles.actionButtonText}>Email</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity style={styles.regenerateButton} onPress={handleRegenerate}>
+                <Ionicons name="refresh-outline" size={20} color="#ffffff" />
+                <Text style={styles.regenerateButtonText}>Regenerate</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity style={styles.actionButton} onPress={handleEmail}>
-                <Ionicons name="mail-outline" size={20} color="#ffffff" />
-                <Text style={styles.actionButtonText}>Email</Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity style={styles.regenerateButton} onPress={handleRegenerate}>
-              <Ionicons name="refresh-outline" size={20} color="#ffffff" />
-              <Text style={styles.regenerateButtonText}>Regenerate</Text>
-            </TouchableOpacity>
-          </>
-        )}
+            </>
+          )}
       </ScrollView>
     </KeyboardAvoidingView>
+    </>
   );
 }
 

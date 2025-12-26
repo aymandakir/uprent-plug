@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { storage } from '@/utils/storage';
+import { haptic } from '@/utils/haptics';
 import {
   View,
   Text,
@@ -13,13 +15,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMatches, type MatchFilters, type MatchSortOption } from '@/hooks/use-matches';
 import { PropertyCard } from '@/components/PropertyCard';
-import { LoadingSkeleton } from '@/components/LoadingSkeleton';
+import { PropertyCardSkeleton } from '@/components/LoadingSkeleton';
 import { ErrorView } from '@/components/ErrorView';
 import { EmptyState } from '@/components/EmptyState';
 import { OfflineBanner } from '@/components/OfflineBanner';
-import type { PropertyMatch } from '@/types/property';
-
-const ITEM_HEIGHT = 380; // Approximate card height
 
 export default function MatchesScreen() {
   const router = useRouter();
@@ -29,16 +28,63 @@ export default function MatchesScreen() {
   const [showSort, setShowSort] = useState(false);
   const { data: matches = [], isLoading, error, refetch, isRefetching } = useMatches(filters, sort);
 
-  const handleFilterApply = (newFilters: MatchFilters) => {
+  // Load saved filter preferences on mount
+  useEffect(() => {
+    const loadPreferences = async () => {
+      const savedFilters = await storage.loadFilterPreferences();
+      if (savedFilters) {
+        setFilters(savedFilters);
+      }
+    };
+    loadPreferences();
+  }, []);
+
+  // Save filter preferences when they change
+  useEffect(() => {
+    if (filters) {
+      storage.saveFilterPreferences(filters).catch(console.error);
+    }
+  }, [filters]);
+
+  const handleFilterApply = useCallback((newFilters: MatchFilters) => {
     setFilters(newFilters);
     setShowFilters(false);
-  };
+  }, []);
 
-  const handleSortSelect = (newSort: MatchSortOption) => {
+  const handleSortSelect = useCallback((newSort: MatchSortOption) => {
     setSort(newSort);
     setShowSort(false);
-  };
+  }, []);
 
+  // Memoize renderItem callback for FlashList
+  const renderPropertyCard = useCallback(
+    ({ item }: { item: any }) => (
+      <PropertyCard
+        match={item}
+        onPress={() => router.push(`/(app)/property/${item.property_id}`)}
+      />
+    ),
+    [router]
+  );
+
+  // Loading state
+  if (isLoading && !matches.length) {
+    return (
+      <View style={styles.container}>
+        <OfflineBanner />
+        <View style={styles.header}>
+          <Text style={styles.title}>Matches</Text>
+        </View>
+        <View style={styles.container}>
+          {[1, 2, 3].map((i) => (
+            <PropertyCardSkeleton key={i} />
+          ))}
+        </View>
+      </View>
+    );
+  }
+
+  // Error state
   if (error) {
     return (
       <View style={styles.container}>
@@ -52,36 +98,28 @@ export default function MatchesScreen() {
     );
   }
 
-  return (
-    <View style={styles.container}>
-      <OfflineBanner />
-      {/* Header with Filters and Sort */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Matches</Text>
-        <View style={styles.headerActions}>
-          <TouchableOpacity
-            style={styles.filterButton}
-            onPress={() => setShowSort(true)}
-          >
-            <Ionicons name="swap-vertical-outline" size={24} color="#ffffff" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.filterButton}
-            onPress={() => setShowFilters(true)}
-          >
-            <Ionicons name="filter-outline" size={24} color="#ffffff" />
-          </TouchableOpacity>
+  // Empty state
+  if (!matches || matches.length === 0) {
+    return (
+      <View style={styles.container}>
+        <OfflineBanner />
+        <View style={styles.header}>
+          <Text style={styles.title}>Matches</Text>
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.filterButton}
+              onPress={() => setShowSort(true)}
+            >
+              <Ionicons name="swap-vertical-outline" size={24} color="#ffffff" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.filterButton}
+              onPress={() => setShowFilters(true)}
+            >
+              <Ionicons name="filter-outline" size={24} color="#ffffff" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-
-      {/* Matches List */}
-      {isLoading && !matches.length ? (
-        <View style={styles.skeletonContainer}>
-          {[1, 2, 3].map((i) => (
-            <LoadingSkeleton.PropertyCardSkeleton key={i} />
-          ))}
-        </View>
-      ) : matches.length === 0 ? (
         <ScrollView
           contentContainerStyle={styles.emptyContainer}
           refreshControl={
@@ -91,29 +129,53 @@ export default function MatchesScreen() {
           <EmptyState
             icon="flash-outline"
             title="No matches yet"
-            message="Create a search profile to get started"
-            actionLabel="Browse Properties"
-            onAction={() => router.push('/(app)/(tabs)/search')}
+            message="Create a search profile to start receiving property matches."
           />
         </ScrollView>
-      ) : (
-        <FlashList
-          data={matches}
-          renderItem={({ item }) => (
-            <PropertyCard
-              match={item}
-              onPress={() => router.push(`/(app)/property/${item.property_id}`)}
-            />
-          )}
-          estimatedItemSize={ITEM_HEIGHT}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          refreshControl={
-            <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#ffffff" />
-          }
-          onEndReachedThreshold={0.5}
-        />
-      )}
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <OfflineBanner />
+      {/* Header with Filters and Sort */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Matches</Text>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => {
+              haptic.light();
+              setShowSort(true);
+            }}
+          >
+            <Ionicons name="swap-vertical-outline" size={24} color="#ffffff" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => {
+              haptic.light();
+              setShowFilters(true);
+            }}
+          >
+            <Ionicons name="filter-outline" size={24} color="#ffffff" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Matches List */}
+      <FlashList
+        data={matches}
+        renderItem={renderPropertyCard}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#ffffff" />
+        }
+        onEndReachedThreshold={0.5}
+        estimatedItemSize={300}
+      />
 
       {/* Filters Modal */}
       <FiltersModal
@@ -145,7 +207,7 @@ function FiltersModal({
   onApply: (filters: MatchFilters) => void;
   currentFilters?: MatchFilters;
 }) {
-  const [filters, setFilters] = useState<MatchFilters>(currentFilters || {});
+  const [filters] = useState<MatchFilters>(currentFilters || {});
 
   return (
     <Modal visible={visible} transparent animationType="slide">

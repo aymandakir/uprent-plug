@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, ReactNode } from 'react';
+import * as Notifications from 'expo-notifications';
 import { usePushNotifications } from '@/hooks/use-push-notifications';
 import { supabase } from '@/lib/supabase';
 

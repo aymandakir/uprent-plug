@@ -1,26 +1,32 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 interface EmptyStateProps {
-  icon?: keyof typeof Ionicons.glyphMap;
-  title: string;
-  message?: string;
+  message: string;
+  icon?: string;
+  // Extended props for backward compatibility
+  title?: string;
   actionLabel?: string;
   onAction?: () => void;
 }
 
 export function EmptyState({
-  icon = 'inbox-outline',
-  title,
   message,
+  icon,
+  title,
   actionLabel,
   onAction,
 }: EmptyStateProps) {
   return (
     <View style={styles.container}>
-      <Ionicons name={icon} size={64} color="#666666" />
-      <Text style={styles.title}>{title}</Text>
-      {message && <Text style={styles.message}>{message}</Text>}
+      {icon && <Text style={styles.icon}>{icon}</Text>}
+      {title ? (
+        <>
+          <Text style={styles.title}>{title}</Text>
+          {message && <Text style={styles.message}>{message}</Text>}
+        </>
+      ) : (
+        <Text style={styles.message}>{message}</Text>
+      )}
       {actionLabel && onAction && (
         <TouchableOpacity style={styles.actionButton} onPress={onAction}>
           <Text style={styles.actionButtonText}>{actionLabel}</Text>
@@ -35,22 +41,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 48,
+    padding: 32,
     backgroundColor: '#000000',
+  },
+  icon: {
+    fontSize: 64,
+    marginBottom: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#ffffff',
-    marginTop: 24,
+    marginTop: 8,
     marginBottom: 8,
     textAlign: 'center',
   },
   message: {
     fontSize: 16,
-    color: '#888888',
+    color: '#999',
     textAlign: 'center',
-    marginBottom: 32,
     lineHeight: 24,
   },
   actionButton: {
@@ -60,6 +69,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     minWidth: 150,
     alignItems: 'center',
+    marginTop: 24,
   },
   actionButtonText: {
     fontSize: 16,

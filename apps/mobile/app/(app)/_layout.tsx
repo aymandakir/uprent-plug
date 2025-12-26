@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
 import { Redirect, Stack } from 'expo-router';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { ActivityIndicator, View, Text, StyleSheet } from 'react-native';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
 
 export default function AppLayout() {
   const { user, loading, hasCompletedOnboarding } = useAuthContext();

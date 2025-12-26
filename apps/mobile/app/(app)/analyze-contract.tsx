@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { useAnalyzeContract } from '@/hooks/use-contract-analyzer';
@@ -16,7 +16,6 @@ import { useUserProfile } from '@/hooks/use-user-profile';
 import { PremiumGate } from '@/components/PremiumGate';
 
 export default function AnalyzeContractScreen() {
-  const router = useRouter();
   const { data: userProfile } = useUserProfile();
   const analyzeContract = useAnalyzeContract();
   const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentPickerAsset | null>(null);
@@ -78,10 +77,6 @@ export default function AnalyzeContractScreen() {
     }
   };
 
-  const handleUpgrade = () => {
-    // Navigate to subscription/settings
-    router.push('/(app)/(tabs)/profile');
-  };
 
   const getRiskColor = (score: number) => {
     if (score >= 80) return '#4CAF50'; // Green
@@ -97,29 +92,34 @@ export default function AnalyzeContractScreen() {
 
   if (!isPremium) {
     return (
-      <PremiumGate feature="Contract Analyzer">
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#ffffff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Contract Analyzer</Text>
-          <View style={{ width: 40 }} />
-        </View>
-      </PremiumGate>
+      <>
+        <Stack.Screen
+          options={{
+            title: 'Contract Analyzer',
+            headerShown: true,
+            headerStyle: { backgroundColor: '#000000' },
+            headerTintColor: '#ffffff',
+            headerBackTitle: 'Back',
+          }}
+        />
+        <PremiumGate feature="Contract Analyzer" />
+      </>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#ffffff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Contract Analyzer</Text>
-        <View style={{ width: 40 }} />
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+    <>
+      <Stack.Screen
+        options={{
+          title: 'Contract Analyzer',
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000000' },
+          headerTintColor: '#ffffff',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <View style={styles.container}>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {!analysisResult ? (
           <>
             {/* Upload Section */}
@@ -137,7 +137,7 @@ export default function AnalyzeContractScreen() {
                       {selectedFile.name}
                     </Text>
                     <Text style={styles.fileSize}>
-                      {(selectedFile.size / 1024).toFixed(2)} KB
+                      {selectedFile.size ? `${(selectedFile.size / 1024).toFixed(2)} KB` : 'Unknown size'}
                     </Text>
                   </View>
                   <TouchableOpacity onPress={handlePickDocument}>
@@ -295,8 +295,9 @@ export default function AnalyzeContractScreen() {
             </View>
           </>
         )}
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+    </>
   );
 }
 

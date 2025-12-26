@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import { useUserProfile } from '@/hooks/use-user-profile';
@@ -60,13 +60,12 @@ const PRICING_TIERS = [
       'Dedicated support',
     ],
   },
-] as const;
+];
 
 export default function SubscriptionScreen() {
   const router = useRouter();
   const { data: profile } = useUserProfile();
   const [loading, setLoading] = useState<string | null>(null);
-  const [webViewVisible, setWebViewVisible] = useState(false);
 
   const currentTier = profile?.subscription_tier || 'free';
 
@@ -118,21 +117,23 @@ export default function SubscriptionScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#ffffff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Subscription Plans</Text>
-        <View style={{ width: 40 }} />
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+    <>
+      <Stack.Screen
+        options={{
+          title: 'Subscription',
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000000' },
+          headerTintColor: '#ffffff',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <View style={styles.container}>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 0 }}>
         <Text style={styles.subtitle}>Choose the plan that's right for you</Text>
 
         {PRICING_TIERS.map((tier) => {
           const isCurrentPlan = currentTier === tier.id;
-          const isPopular = tier.popular;
+          const isPopular = tier.popular === true;
 
           return (
             <View
@@ -207,6 +208,7 @@ export default function SubscriptionScreen() {
         </Text>
       </ScrollView>
     </View>
+    </>
   );
 }
 

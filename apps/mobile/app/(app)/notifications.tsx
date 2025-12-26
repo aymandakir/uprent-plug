@@ -10,7 +10,6 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
-import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import {
   useNotifications,
   useMarkAsRead,
@@ -97,65 +96,61 @@ interface NotificationCardProps {
 }
 
 function NotificationCard({ notification, onPress, onMarkAsRead, onDelete }: NotificationCardProps) {
-  const renderRightActions = () => (
-    <View style={styles.swipeActions}>
-      <TouchableOpacity
-        style={[styles.swipeAction, styles.swipeActionDelete]}
-        onPress={onDelete}
-      >
-        <Ionicons name="trash-outline" size={24} color="#ffffff" />
-      </TouchableOpacity>
-    </View>
-  );
-
-  const renderLeftActions = () => (
-    <View style={styles.swipeActions}>
-      <TouchableOpacity
-        style={[styles.swipeAction, styles.swipeActionRead]}
-        onPress={onMarkAsRead}
-      >
-        <Ionicons name="checkmark-circle-outline" size={24} color="#ffffff" />
-      </TouchableOpacity>
-    </View>
-  );
-
   return (
-    <Swipeable
-      renderRightActions={renderRightActions}
-      renderLeftActions={!notification.read ? renderLeftActions : undefined}
-      overshootRight={false}
-      overshootLeft={false}
+    <TouchableOpacity
+      style={[styles.notificationCard, !notification.read && styles.notificationCardUnread]}
+      onPress={onPress}
+      activeOpacity={0.8}
     >
-      <TouchableOpacity
-        style={[styles.notificationCard, !notification.read && styles.notificationCardUnread]}
-        onPress={onPress}
-      >
-        <View style={styles.notificationIcon}>
-          <Ionicons
-            name={getNotificationIcon(notification.type) as any}
-            size={24}
-            color={notification.read ? '#888888' : '#ffffff'}
-          />
-        </View>
-        <View style={styles.notificationContent}>
-          <Text
-            style={[
-              styles.notificationTitle,
-              !notification.read && styles.notificationTitleUnread,
-            ]}
+      <View style={styles.notificationIcon}>
+        <Ionicons
+          name={getNotificationIcon(notification.type) as any}
+          size={24}
+          color={notification.read ? '#888888' : '#ffffff'}
+        />
+      </View>
+      <View style={styles.notificationContent}>
+        <Text
+          style={[
+            styles.notificationTitle,
+            !notification.read && styles.notificationTitleUnread,
+          ]}
+        >
+          {notification.title}
+        </Text>
+        <Text style={styles.notificationMessage} numberOfLines={2}>
+          {notification.message}
+        </Text>
+        <Text style={styles.notificationTime}>
+          {formatRelativeTime(notification.created_at)}
+        </Text>
+      </View>
+      <View style={styles.notificationActions}>
+        {!notification.read && (
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={(e) => {
+              e.stopPropagation();
+              onMarkAsRead();
+            }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            {notification.title}
-          </Text>
-          <Text style={styles.notificationMessage} numberOfLines={2}>
-            {notification.message}
-          </Text>
-          <Text style={styles.notificationTime}>
-            {formatRelativeTime(notification.created_at)}
-          </Text>
-        </View>
+            <Ionicons name="checkmark-circle-outline" size={20} color="#4CAF50" />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Ionicons name="trash-outline" size={20} color="#F44336" />
+        </TouchableOpacity>
         {!notification.read && <View style={styles.unreadDot} />}
-      </TouchableOpacity>
-    </Swipeable>
+      </View>
+    </TouchableOpacity>
   );
 }
 
@@ -205,7 +200,7 @@ export default function NotificationsScreen() {
   }
 
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <View style={styles.container}>
       <OfflineBanner />
       {/* Header */}
       <View style={styles.header}>
@@ -293,7 +288,7 @@ export default function NotificationsScreen() {
           }
         />
       )}
-    </GestureHandlerRootView>
+    </View>
   );
 }
 
@@ -423,23 +418,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginLeft: 8,
   },
-  swipeActions: {
+  notificationActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    width: 80,
+    gap: 8,
+    marginLeft: 8,
   },
-  swipeAction: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-  },
-  swipeActionRead: {
-    backgroundColor: '#4CAF50',
-  },
-  swipeActionDelete: {
-    backgroundColor: '#F44336',
+  actionButton: {
+    padding: 8,
+    borderRadius: 8,
   },
   skeletonContainer: {
     padding: 16,

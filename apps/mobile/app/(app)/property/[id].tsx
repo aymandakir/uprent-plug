@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { storage } from '@/utils/storage';
 import {
   View,
   Text,
@@ -9,8 +10,8 @@ import {
   Share,
   Linking,
 } from 'react-native';
-import { Image } from 'expo-image';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { ImageWithFallback } from '@/components/ImageWithFallback';
+import { useRouter, useLocalSearchParams, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useProperty, useIsSaved } from '@/hooks/use-property';
 import { useSaveProperty, useUnsaveProperty } from '@/hooks/use-matches';
@@ -34,6 +35,13 @@ export default function PropertyDetailScreen() {
   const toast = useToast();
 
   const images = property?.images || property?.photos || [];
+
+  // Save to recently viewed when property loads
+  useEffect(() => {
+    if (id) {
+      storage.addToRecentlyViewed(id).catch(console.error);
+    }
+  }, [id]);
 
   const handleShare = async () => {
     try {
@@ -75,29 +83,75 @@ export default function PropertyDetailScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.container}>
-        <OfflineBanner />
-        <LoadingSpinner message="Loading property details..." />
-      </View>
+      <>
+        <Stack.Screen
+          options={{
+            title: 'Property Details',
+            headerShown: true,
+            headerStyle: { backgroundColor: '#000000' },
+            headerTintColor: '#ffffff',
+            headerBackTitle: 'Back',
+          }}
+        />
+        <View style={styles.container}>
+          <OfflineBanner />
+          <LoadingSpinner message="Loading property details..." />
+        </View>
+      </>
     );
   }
 
   if (error || !property) {
     return (
-      <View style={styles.container}>
-        <OfflineBanner />
-        <ErrorView
-          title={error ? "Failed to load property" : "Property not found"}
-          message={error?.message || "This property doesn't exist or has been removed."}
-          onRetry={() => router.back()}
-          retryLabel="Go Back"
+      <>
+        <Stack.Screen
+          options={{
+            title: 'Property Details',
+            headerShown: true,
+            headerStyle: { backgroundColor: '#000000' },
+            headerTintColor: '#ffffff',
+            headerBackTitle: 'Back',
+          }}
         />
-      </View>
+        <View style={styles.container}>
+          <OfflineBanner />
+          <ErrorView
+            title={error ? "Failed to load property" : "Property not found"}
+            message={error?.message || "This property doesn't exist or has been removed."}
+            onRetry={() => router.back()}
+            retryLabel="Go Back"
+          />
+        </View>
+      </>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <>
+      <Stack.Screen
+        options={{
+          title: property.address || 'Property Details',
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000000' },
+          headerTintColor: '#ffffff',
+          headerBackTitle: 'Back',
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', gap: 16, marginRight: 16 }}>
+              <TouchableOpacity onPress={handleShare}>
+                <Ionicons name="share-outline" size={24} color="#ffffff" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSave}>
+                <Ionicons
+                  name={saved ? 'heart' : 'heart-outline'}
+                  size={24}
+                  color={saved ? '#ff4444' : '#ffffff'}
+                />
+              </TouchableOpacity>
+            </View>
+          ),
+        }}
+      />
+      <View style={styles.container}>
       <OfflineBanner />
       {/* Image Gallery */}
       {images.length > 0 ? (
@@ -113,13 +167,14 @@ export default function PropertyDetailScreen() {
             scrollEventThrottle={16}
           >
             {images.map((image, index) => (
-              <Image
+              <ImageWithFallback
                 key={index}
                 source={{ uri: image }}
                 style={styles.galleryImage}
                 contentFit="cover"
                 transition={200}
                 cachePolicy="memory-disk"
+                fallbackIcon="home-outline"
               />
             ))}
           </ScrollView>
@@ -287,6 +342,7 @@ export default function PropertyDetailScreen() {
         </View>
       </ScrollView>
     </View>
+    </>
   );
 }
 

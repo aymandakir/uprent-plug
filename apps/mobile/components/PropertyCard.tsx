@@ -7,11 +7,12 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from '@/components/ImageWithFallback';
 import { Ionicons } from '@expo/vector-icons';
 import type { PropertyMatch } from '@/types/property';
 import { useSaveProperty, useUnsaveProperty } from '@/hooks/use-matches';
 import { useToast } from '@/hooks/use-toast';
+import { haptic } from '@/utils/haptics';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 48; // padding on both sides
@@ -35,6 +36,7 @@ export const PropertyCard = memo(function PropertyCard({ match, onPress, isSaved
   if (!property) return null;
 
   const handleSave = async () => {
+    haptic.medium();
     const wasSaved = saved;
     // Optimistic update
     setSaved(!saved);
@@ -42,20 +44,30 @@ export const PropertyCard = memo(function PropertyCard({ match, onPress, isSaved
     try {
       if (wasSaved) {
         await unsaveMutation.mutateAsync({ propertyId: property.id });
+        haptic.success();
         toast.show.success('Property unsaved');
       } else {
         await saveMutation.mutateAsync({ propertyId: property.id });
+        haptic.success();
         toast.show.success('Property saved');
       }
     } catch (error) {
       // Revert on error
       setSaved(wasSaved);
+      haptic.error();
       toast.show.error('Failed to update property');
     }
   };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.9}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => {
+        haptic.light();
+        onPress();
+      }}
+      activeOpacity={0.9}
+    >
       {/* Image Carousel */}
       {images.length > 0 ? (
         <View style={styles.imageContainer}>
@@ -70,13 +82,14 @@ export const PropertyCard = memo(function PropertyCard({ match, onPress, isSaved
             scrollEventThrottle={16}
           >
             {images.slice(0, 5).map((image, index) => (
-              <Image
+              <ImageWithFallback
                 key={index}
                 source={{ uri: image }}
                 style={styles.image}
                 contentFit="cover"
                 transition={200}
                 cachePolicy="memory-disk"
+                fallbackIcon="home-outline"
               />
             ))}
           </ScrollView>

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { haptic } from '@/utils/haptics';
 import {
   View,
   Text,
@@ -13,11 +14,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useSavedProperties, useUnsaveProperty } from '@/hooks/use-saved';
 import { SavedPropertyCard } from '@/components/SavedPropertyCard';
-import { LoadingSkeleton } from '@/components/LoadingSkeleton';
+import { PropertyGridSkeleton } from '@/components/LoadingSkeleton';
 import { ErrorView } from '@/components/ErrorView';
 import { EmptyState } from '@/components/EmptyState';
 import { OfflineBanner } from '@/components/OfflineBanner';
-import type { SavedProperty } from '@/types/property';
 
 const NUM_COLUMNS = 2;
 
@@ -28,44 +28,86 @@ export default function SavedScreen() {
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const handleLongPress = () => {
-    setSelectionMode(true);
-  };
+  // Loading state
+  if (isLoading && !savedProperties.length) {
+    return (
+      <View style={styles.container}>
+        <OfflineBanner />
+        <View style={styles.header}>
+          <Text style={styles.title}>Saved Properties</Text>
+        </View>
+        <View style={styles.skeletonContainer}>
+          <PropertyGridSkeleton />
+        </View>
+      </View>
+    );
+  }
 
-  const handleSelect = (propertyId: string) => {
-    if (!selectionMode) return;
+  // Error state
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <OfflineBanner />
+        <ErrorView
+          title="Failed to load saved properties"
+          message={error.message || 'Something went wrong. Please try again.'}
+          onRetry={refetch}
+        />
+      </View>
+    );
+  }
 
-    const newSelected = new Set(selectedIds);
-    if (newSelected.has(propertyId)) {
-      newSelected.delete(propertyId);
-    } else {
-      newSelected.add(propertyId);
-    }
-    setSelectedIds(newSelected);
 
-    if (newSelected.size === 0) {
-      setSelectionMode(false);
-    }
-  };
+  const handleSelect = useCallback(
+    (propertyId: string) => {
+      if (!selectionMode) return;
 
-  const handleSelectAll = () => {
-    if (selectedIds.size === savedProperties.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(savedProperties.map((sp) => sp.property_id)));
-    }
-  };
+      haptic.selection();
+      setSelectedIds((prev) => {
+        const newSelected = new Set(prev);
+        if (newSelected.has(propertyId)) {
+          newSelected.delete(propertyId);
+        } else {
+          newSelected.add(propertyId);
+        }
 
-  const handleUnsave = (propertyId: string) => {
-    unsaveMutation.mutate({ propertyId });
-    if (selectedIds.has(propertyId)) {
-      const newSelected = new Set(selectedIds);
-      newSelected.delete(propertyId);
-      setSelectedIds(newSelected);
-    }
-  };
+        if (newSelected.size === 0) {
+          setSelectionMode(false);
+        }
 
-  const handleBatchUnsave = () => {
+        return newSelected;
+      });
+    },
+    [selectionMode]
+  );
+
+  const handleSelectAll = useCallback(() => {
+    setSelectedIds((prev) => {
+      if (prev.size === savedProperties.length) {
+        return new Set();
+      } else {
+        return new Set(savedProperties.map((sp) => sp.property_id));
+      }
+    });
+  }, [savedProperties]);
+
+  const handleUnsave = useCallback(
+    (propertyId: string) => {
+      haptic.medium();
+      unsaveMutation.mutate({ propertyId });
+      setSelectedIds((prev) => {
+        if (prev.has(propertyId)) {
+          const newSelected = new Set(prev);
+          newSelected.delete(propertyId);
+          return newSelected;
+        }
+        return prev;
+      });
+    },
+    [unsaveMutation]
+  );
+
+  const handleBatchUnsave = useCallback(() => {
     if (selectedIds.size === 0) return;
 
     Alert.alert(
@@ -86,12 +128,26 @@ export default function SavedScreen() {
         },
       ]
     );
-  };
+  }, [selectedIds.size, handleUnsave]);
 
-  const handleCancelSelection = () => {
+  const handleCancelSelection = useCallback(() => {
     setSelectedIds(new Set());
     setSelectionMode(false);
-  };
+  }, []);
+
+  // Memoize renderItem callback for FlashList
+  const renderSavedPropertyCard = useCallback(
+    ({ item }: { item: any }) => (
+      <SavedPropertyCard
+        savedProperty={item}
+        onPress={() => router.push(`/(app)/property/${item.property_id}`)}
+        onUnsave={() => handleUnsave(item.property_id)}
+        selected={selectedIds.has(item.property_id)}
+        onSelect={() => handleSelect(item.property_id)}
+      />
+    ),
+    [router, handleUnsave, handleSelect, selectedIds]
+  );
 
   if (error) {
     return (
@@ -99,7 +155,7 @@ export default function SavedScreen() {
         <OfflineBanner />
         <ErrorView
           title="Failed to load saved properties"
-          message={error.message || 'Something went wrong. Please try again.'}
+          message={(error as { message?: string })?.message || 'Something went wrong. Please try again.'}
           onRetry={refetch}
         />
       </View>
@@ -147,11 +203,7 @@ export default function SavedScreen() {
       )}
 
       {/* Properties Grid */}
-      {isLoading && !savedProperties.length ? (
-        <View style={styles.skeletonContainer}>
-          <LoadingSkeleton.PropertyGridSkeleton />
-        </View>
-      ) : savedProperties.length === 0 ? (
+      {savedProperties.length === 0 ? (
         <ScrollView
           contentContainerStyle={styles.emptyContainer}
           refreshControl={
@@ -169,22 +221,14 @@ export default function SavedScreen() {
       ) : (
         <FlashList
           data={savedProperties}
-          renderItem={({ item }) => (
-            <SavedPropertyCard
-              savedProperty={item}
-              onPress={() => router.push(`/(app)/property/${item.property_id}`)}
-              onUnsave={() => handleUnsave(item.property_id)}
-              selected={selectedIds.has(item.property_id)}
-              onSelect={() => handleSelect(item.property_id)}
-            />
-          )}
+          renderItem={renderSavedPropertyCard}
           numColumns={NUM_COLUMNS}
-          estimatedItemSize={280}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           refreshControl={
             <RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor="#ffffff" />
           }
+          estimatedItemSize={200}
         />
       )}
     </View>

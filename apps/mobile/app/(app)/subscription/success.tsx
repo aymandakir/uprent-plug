@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -14,7 +14,17 @@ export default function SubscriptionSuccessScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <>
+      <Stack.Screen
+        options={{
+          title: 'Subscription Success',
+          headerShown: true,
+          headerStyle: { backgroundColor: '#000000' },
+          headerTintColor: '#ffffff',
+          headerBackTitle: 'Back',
+        }}
+      />
+      <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.successIcon}>
           <Ionicons name="checkmark-circle" size={80} color="#4CAF50" />
@@ -31,6 +41,7 @@ export default function SubscriptionSuccessScreen() {
         </TouchableOpacity>
       </View>
     </View>
+    </>
   );
 }
 

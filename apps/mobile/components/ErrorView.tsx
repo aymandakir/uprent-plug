@@ -2,22 +2,29 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface ErrorViewProps {
-  title?: string;
   message: string;
+  icon?: string;
+  // Extended props for backward compatibility
+  title?: string;
   onRetry?: () => void;
   retryLabel?: string;
 }
 
 export function ErrorView({
-  title = 'Something went wrong',
   message,
+  icon,
+  title = 'Something went wrong',
   onRetry,
   retryLabel = 'Retry',
 }: ErrorViewProps) {
   return (
     <View style={styles.container}>
-      <Ionicons name="alert-circle-outline" size={64} color="#ff4444" />
-      <Text style={styles.title}>{title}</Text>
+      {icon ? (
+        <Text style={styles.icon}>{icon}</Text>
+      ) : (
+        <Ionicons name="alert-circle-outline" size={64} color="#ff4444" />
+      )}
+      {title && <Text style={styles.title}>{title}</Text>}
       <Text style={styles.message}>{message}</Text>
       {onRetry && (
         <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
@@ -33,22 +40,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 48,
+    padding: 32,
     backgroundColor: '#000000',
+  },
+  icon: {
+    fontSize: 64,
+    marginBottom: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#ffffff',
-    marginTop: 24,
+    marginTop: 8,
     marginBottom: 8,
     textAlign: 'center',
   },
   message: {
     fontSize: 16,
-    color: '#888888',
+    color: '#999',
     textAlign: 'center',
-    marginBottom: 32,
     lineHeight: 24,
   },
   retryButton: {
@@ -58,6 +68,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     minWidth: 150,
     alignItems: 'center',
+    marginTop: 24,
   },
   retryButtonText: {
     fontSize: 16,

@@ -1,21 +1,27 @@
 import { useState, useEffect } from 'react';
-import * as Network from 'expo-network';
+import NetInfo from '@react-native-community/netinfo';
+import type { NetInfoState } from '@react-native-community/netinfo';
 
 export function useNetwork() {
   const [isConnected, setIsConnected] = useState(true);
-  const [networkType, setNetworkType] = useState<Network.NetworkStateType | null>(null);
+  const [networkType, setNetworkType] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkNetwork = async () => {
-      const networkState = await Network.getNetworkStateAsync();
-      setIsConnected(networkState.isConnected ?? true);
-      setNetworkType(networkState.type);
+    // Get initial state
+    NetInfo.fetch().then((state: NetInfoState) => {
+      setIsConnected(state.isConnected ?? true);
+      setNetworkType(state.type ?? null);
+    });
+
+    // Subscribe to network state changes
+    const unsubscribe = NetInfo.addEventListener((state: NetInfoState) => {
+      setIsConnected(state.isConnected ?? true);
+      setNetworkType(state.type ?? null);
+    });
+
+    return () => {
+      unsubscribe();
     };
-
-    checkNetwork();
-    const interval = setInterval(checkNetwork, 5000);
-
-    return () => clearInterval(interval);
   }, []);
 
   return {

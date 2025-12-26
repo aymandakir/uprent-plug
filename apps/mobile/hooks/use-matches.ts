@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import type { PropertyMatch, Property } from '@/types/property';
+import type { PropertyMatch } from '@/types/property';
 
 export interface MatchFilters {
   minPrice?: number;

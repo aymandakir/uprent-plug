@@ -1,62 +1,26 @@
 {
   "cli": {
-    "version": ">=5.9.0"
+    "version": ">= 12.0.0"
   },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "ios": {
-        "simulator": true
-      },
-      "android": {
-        "buildType": "apk"
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://dekupatxeglqacsrqlew.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRla3VwYXR4ZWdscWFjc3JxbGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUyNzY1NzIsImV4cCI6MjA1MDg1MjU3Mn0.4cXPpD9Wy3xq5FJ3QzJ3xq5FJ3QzJ3xq5FJ3QzJ3xq5FJ3QzJ"
       }
     },
     "preview": {
       "distribution": "internal",
-      "ios": {
-        "simulator": false
-      },
-      "android": {
-        "buildType": "apk"
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://dekupatxeglqacsrqlew.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRla3VwYXR4ZWdscWFjc3JxbGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUyNzY1NzIsImV4cCI6MjA1MDg1MjU3Mn0.4cXPpD9Wy3xq5FJ3QzJ3xq5FJ3QzJ3xq5FJ3QzJ3xq5FJ3QzJ3xq5FJ3QzJ"
       }
     },
-    "production": {
-      "ios": {
-        "bundleIdentifier": "com.uprentplus.mobile",
-        "buildNumber": "1"
-      },
-      "android": {
-        "package": "com.uprentplus.mobile",
-        "versionCode": 1
-      },
-      "env": {
-        "EXPO_PUBLIC_API_URL": "",
-        "EXPO_PUBLIC_SUPABASE_URL": "",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "",
-        "EXPO_PUBLIC_EAS_PROJECT_ID": ""
-      }
-    }
+    "production": {}
   },
   "submit": {
-    "production": {
-      "ios": {
-        "appleId": "",
-        "ascAppId": "",
-        "appleTeamId": ""
-      },
-      "android": {
-        "serviceAccountKeyPath": "./google-play-key.json"
-      }
-    }
-  },
-  "updates": {
-    "production": {
-      "channel": "production"
-    },
-    "preview": {
-      "channel": "preview"
-    }
+    "production": {}
   }
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
-import { Platform, Linking } from 'react-native';
+import { Platform } from 'react-native';
 import { supabase } from '@/lib/supabase';
 
 // Configure notification behavior
@@ -10,6 +10,8 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -24,8 +26,8 @@ export function usePushNotifications() {
   const [permissionStatus, setPermissionStatus] = useState<Notifications.PermissionStatus>(
     Notifications.PermissionStatus.UNDETERMINED
   );
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
+  const notificationListener = useRef<Notifications.Subscription | null>(null);
+  const responseListener = useRef<Notifications.Subscription | null>(null);
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
@@ -49,41 +51,51 @@ export function usePushNotifications() {
 
     return () => {
       if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(notificationListener.current);
+        notificationListener.current.remove();
       }
       if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
+        responseListener.current.remove();
       }
     };
   }, []);
 
   const registerForPushNotificationsAsync = async (): Promise<string | null> => {
-    if (!Device.isDevice) {
-      console.warn('Must use physical device for Push Notifications');
-      return null;
-    }
-
-    // Check current permission status
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    setPermissionStatus(existingStatus);
-
-    if (existingStatus !== 'granted') {
-      // Request permission
-      const { status } = await Notifications.requestPermissionsAsync();
-      setPermissionStatus(status);
-      if (status !== 'granted') {
-        console.warn('Failed to get push token for push notification!');
+    try {
+      if (!Device.isDevice) {
+        console.log('Push notifications disabled: Must use physical device');
         return null;
       }
-    }
 
-    try {
+      // Check for EAS projectId first
+      const projectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID;
+
+      if (!projectId) {
+        console.log('Push notifications disabled: No EAS projectId configured');
+        return null;
+      }
+
+      // Check current permission status
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      setPermissionStatus(existingStatus);
+
+      if (existingStatus !== 'granted') {
+        // Request permission
+        const { status } = await Notifications.requestPermissionsAsync();
+        setPermissionStatus(status);
+        if (status !== 'granted') {
+          console.log('Push notifications disabled: Permission not granted');
+          return null;
+        }
+      }
+
       const tokenData = await Notifications.getExpoPushTokenAsync({
-        projectId: process.env.EXPO_PUBLIC_EAS_PROJECT_ID,
+        projectId,
       });
+
       return tokenData.data;
-    } catch (error) {
-      console.error('Error getting push token:', error);
+    } catch (error: any) {
+      console.log('Push notifications not available:', error?.message || error);
+      // Don't throw - push notifications are optional in development
       return null;
     }
   };

@@ -1,7 +1,18 @@
+import { useMemo } from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useNotifications } from '@/hooks/use-notifications';
 
 export default function TabsLayout() {
+  const { data: notifications } = useNotifications();
+  
+  const unreadCount = useMemo(() => {
+    if (!notifications || !Array.isArray(notifications)) {
+      return 0;
+    }
+    return notifications.filter((n) => !n.read).length;
+  }, [notifications]);
+
   return (
     <Tabs
       screenOptions={{

@@ -324,7 +324,7 @@ export default function ProfileScreen() {
         <Text style={styles.sectionTitle}>App</Text>
         <TouchableOpacity
           style={styles.settingItem}
-          onPress={() => Linking.openURL(`${process.env.EXPO_PUBLIC_API_URL}/privacy`)}
+          onPress={() => router.push('/legal/privacy')}
         >
           <Ionicons name="shield-checkmark-outline" size={24} color="#ffffff" />
           <Text style={styles.settingLabel}>Privacy Policy</Text>
@@ -332,7 +332,7 @@ export default function ProfileScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.settingItem}
-          onPress={() => Linking.openURL(`${process.env.EXPO_PUBLIC_API_URL}/terms`)}
+          onPress={() => router.push('/legal/terms')}
         >
           <Ionicons name="document-text-outline" size={24} color="#ffffff" />
           <Text style={styles.settingLabel}>Terms of Service</Text>

@@ -1,158 +1,85 @@
-import { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthContext } from '@/contexts/AuthContext';
+import * as SecureStore from 'expo-secure-store';
 
-export default function WelcomeScreen() {
+const HAS_SEEN_CAROUSEL_KEY = 'has_seen_carousel';
+
+// Route constants
+const CAROUSEL_ROUTE = '/(auth)/onboarding-carousel';
+const SIGN_IN_ROUTE = '/(auth)/sign-in';
+const TABS_ROUTE = '/(app)/(tabs)';
+const ONBOARDING_ROUTE = '/(auth)/onboarding';
+
+export default function Index() {
   const router = useRouter();
   const { user, loading, hasCompletedOnboarding } = useAuthContext();
+  const hasNavigatedRef = useRef(false);
+  const [hasSeenCarousel, setHasSeenCarousel] = useState<boolean | null>(null);
 
+  // Check if user has seen the carousel
   useEffect(() => {
-    if (!loading && user) {
-      if (hasCompletedOnboarding) {
-        router.replace('/(app)/(tabs)');
-      } else {
-        router.replace('/(auth)/onboarding');
+    async function checkCarouselStatus() {
+      try {
+        const seen = await SecureStore.getItemAsync(HAS_SEEN_CAROUSEL_KEY);
+        setHasSeenCarousel(seen === 'true');
+      } catch (error) {
+        console.error('Error checking carousel status:', error);
+        setHasSeenCarousel(false); // Default to not seen on error
       }
     }
-  }, [user, loading, hasCompletedOnboarding, router]);
+    checkCarouselStatus();
+  }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#ffffff" />
-      </View>
-    );
-  }
+  useEffect(() => {
+    if (loading || hasSeenCarousel === null || hasNavigatedRef.current) return;
 
-  if (user) {
-    return null; // Will redirect in useEffect
-  }
+    // First-time user: show carousel
+    if (!hasSeenCarousel && !user) {
+      hasNavigatedRef.current = true;
+      router.replace(CAROUSEL_ROUTE);
+      return;
+    }
 
+    // User exists: route based on onboarding status
+    if (user) {
+      hasNavigatedRef.current = true;
+      if (hasCompletedOnboarding) {
+        router.replace(TABS_ROUTE);
+      } else {
+        router.replace(ONBOARDING_ROUTE);
+      }
+      return;
+    }
+
+    // Returning user (no session): show sign-in
+    if (!user && hasSeenCarousel) {
+      hasNavigatedRef.current = true;
+      router.replace(SIGN_IN_ROUTE);
+    }
+  }, [user, loading, hasCompletedOnboarding, hasSeenCarousel, router]);
+
+  // Reset navigation flag when user logs out
+  useEffect(() => {
+    if (!user) {
+      hasNavigatedRef.current = false;
+    }
+  }, [user]);
+
+  // Show loading indicator while checking auth and carousel status
   return (
-    <ScrollView contentContainerStyle={styles.scrollContent} style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.logo}>Uprent Plus</Text>
-        <Text style={styles.hero}>Find your next home</Text>
-        <Text style={styles.heroAccent}>15 seconds faster</Text>
-
-        <View style={styles.features}>
-          <View style={styles.feature}>
-            <Text style={styles.featureIcon}>⚡</Text>
-            <Text style={styles.featureText}>Real-time alerts from 1,500+ sources</Text>
-          </View>
-          <View style={styles.feature}>
-            <Text style={styles.featureIcon}>🤖</Text>
-            <Text style={styles.featureText}>AI-powered application letters</Text>
-          </View>
-          <View style={styles.feature}>
-            <Text style={styles.featureIcon}>🎯</Text>
-            <Text style={styles.featureText}>Smart matching with score-based recommendations</Text>
-          </View>
-        </View>
-
-        <View style={styles.buttons}>
-          <TouchableOpacity
-            style={[styles.button, styles.buttonPrimary]}
-            onPress={() => router.push('/(auth)/sign-up')}
-          >
-            <Text style={styles.buttonPrimaryText}>Get Started</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.button, styles.buttonSecondary]}
-            onPress={() => router.push('/(auth)/sign-in')}
-          >
-            <Text style={styles.buttonSecondaryText}>Sign In</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#7C3AED" />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
     backgroundColor: '#000000',
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  content: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 48,
-  },
-  logo: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 32,
-  },
-  hero: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  heroAccent: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#888888',
-    textAlign: 'center',
-    marginBottom: 48,
-  },
-  features: {
-    width: '100%',
-    marginBottom: 48,
-  },
-  feature: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 16,
-  },
-  featureIcon: {
-    fontSize: 32,
-    marginRight: 16,
-  },
-  featureText: {
-    flex: 1,
-    fontSize: 16,
-    color: '#ffffff',
-    lineHeight: 24,
-  },
-  buttons: {
-    width: '100%',
-    gap: 16,
-  },
-  button: {
-    width: '100%',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonPrimary: {
-    backgroundColor: '#ffffff',
-  },
-  buttonSecondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#ffffff',
-  },
-  buttonPrimaryText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000000',
-  },
-  buttonSecondaryText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
   },
 });

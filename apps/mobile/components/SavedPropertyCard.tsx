@@ -1,9 +1,10 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
+import { ImageWithFallback } from '@/components/ImageWithFallback';
 import { Ionicons } from '@expo/vector-icons';
 import { memo } from 'react';
 import type { SavedProperty } from '@/types/property';
 import { Dimensions } from 'react-native';
+import { haptic } from '@/utils/haptics';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = (SCREEN_WIDTH - 48 - 12) / 2; // 2 columns with gap
@@ -32,24 +33,31 @@ export const SavedPropertyCard = memo(function SavedPropertyCard({
   return (
     <TouchableOpacity
       style={[styles.card, selected && styles.cardSelected]}
-      onPress={onSelect ? onSelect : onPress}
-      onLongPress={onSelect}
+      onPress={() => {
+        haptic.light();
+        if (onSelect) {
+          onSelect();
+        } else {
+          onPress();
+        }
+      }}
+      onLongPress={() => {
+        haptic.medium();
+        if (onSelect) {
+          onSelect();
+        }
+      }}
       activeOpacity={0.9}
     >
       {/* Image */}
-      {mainImage ? (
-        <Image
-          source={{ uri: mainImage }}
-          style={styles.image}
-          contentFit="cover"
-          transition={200}
-          cachePolicy="memory-disk"
-        />
-      ) : (
-        <View style={[styles.image, styles.placeholderImage]}>
-          <Ionicons name="home-outline" size={32} color="#666666" />
-        </View>
-      )}
+      <ImageWithFallback
+        source={mainImage ? { uri: mainImage } : undefined}
+        style={styles.image}
+        contentFit="cover"
+        transition={200}
+        cachePolicy="memory-disk"
+        fallbackIcon="home-outline"
+      />
 
       {/* Selection Indicator */}
       {selected && (
@@ -107,11 +115,6 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 160,
-  },
-  placeholderImage: {
-    backgroundColor: '#333333',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   selectedIndicator: {
     position: 'absolute',

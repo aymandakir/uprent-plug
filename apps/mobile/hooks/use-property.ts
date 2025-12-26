@@ -29,7 +29,7 @@ export function useIsSaved(propertyId: string) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('saved_properties')
         .select('id')
         .eq('user_id', user.id)

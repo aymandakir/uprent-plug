@@ -22,7 +22,11 @@
         "NSPhotoLibraryUsageDescription": "We need access to your photo library to set your profile picture.",
         "NSCameraUsageDescription": "We need access to your camera to take a profile picture.",
         "NSLocationWhenInUseUsageDescription": "We use your location to show nearby properties on the map."
-      }
+      },
+      "associatedDomains": [
+        "applinks:uprent-plug-web.vercel.app",
+        "applinks:uprent-plug-web.vercel.app"
+      ]
     },
     "android": {
       "adaptiveIcon": {
@@ -32,11 +36,54 @@
       "package": "com.uprentplus.mobile",
       "versionCode": 1,
       "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "uprentplus"
+            },
+            {
+              "scheme": "https",
+              "host": "uprent-plug-web.vercel.app"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "uprentplus"
+            },
+            {
+              "scheme": "https",
+              "host": "uprent-plug-web.vercel.app"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
       ]
     },
     "web": {
@@ -59,7 +106,8 @@
             "./assets/notification-sound.wav"
           ]
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "scheme": "uprentplus",
     "extra": {
@@ -67,12 +115,13 @@
         "origin": false
       },
       "eas": {
-        "projectId": ""
+        "projectId": "c5b198dc-13f7-497a-8e42-97f9ca0d7a1e"
       }
     },
     "privacy": "public",
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/c5b198dc-13f7-497a-8e42-97f9ca0d7a1e"
     },
     "runtimeVersion": {
       "policy": "appVersion"
