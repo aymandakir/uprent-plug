@@ -1,0 +1,59 @@
+name: Mobile App Tests
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/mobile/**'
+      - 'packages/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'apps/mobile/**'
+      - 'packages/**'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run type check
+        working-directory: apps/mobile
+        run: pnpm type-check
+
+      - name: Run linter
+        working-directory: apps/mobile
+        run: pnpm lint || true
+
+      - name: Run tests
+        working-directory: apps/mobile
+        run: pnpm test --coverage --watchAll=false
+        env:
+          CI: true
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./apps/mobile/coverage/lcov.info
+          flags: mobile
+          name: mobile-coverage
+        if: always()
+
