@@ -71,19 +71,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+      
+      - name: Enable corepack
+        run: corepack enable
       
       - name: Install Vercel CLI
-        run: pnpm add --global vercel@latest
+        run: corepack pnpm add --global vercel@latest
+      
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
       
       - name: Deploy to Vercel Preview
         run: vercel --yes --token=${{ secrets.VERCEL_TOKEN }}
@@ -101,19 +101,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+      
+      - name: Enable corepack
+        run: corepack enable
       
       - name: Install Vercel CLI
-        run: pnpm add --global vercel@latest
+        run: corepack pnpm add --global vercel@latest
+      
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
       
       - name: Pull Vercel Environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
@@ -140,19 +140,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+      
+      - name: Enable corepack
+        run: corepack enable
       
       - name: Install Vercel CLI
-        run: pnpm add --global vercel@latest
+        run: corepack pnpm add --global vercel@latest
+      
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
       
       - name: Pull Vercel Environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
