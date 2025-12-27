@@ -1,173 +1,62 @@
-# Uprent Plus 🚀
+Uprent Plus 🚀
+An experimental extension for Uprent exploring innovative features for the Dutch rental market
 
-> **An Enhanced Extension for Uprent** — A side project exploring advanced features for the Dutch rental market, built to understand the process and deliver real value.
+💡 The Concept
+Uprent Plus is a side project testing advanced rental search features that current platforms don't offer. Built to explore what's possible and understand what renters actually need in the competitive Dutch market.
 
-[![Deploy](https://vercel.com/button)](https://vercel.com/new)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+Why This Exists
 
-## 📖 Overview
+Three simple goals:
 
-**Uprent Plus** is a feature-rich extension built on top of the Uprent platform, designed to fill gaps and explore innovative solutions for the competitive Dutch rental market. This project serves as both a learning experiment and a showcase of potential enhancements that could benefit renters across the Netherlands.
+Test new ideas — Real-time alerts, AI-powered letters, smart matching
 
-### What Makes This Different?
+Learn the market — Understand user pain points and competitor gaps
 
-While Uprent.nl provides excellent core rental search functionality, Uprent Plus adds:
+Deliver value — Build features people actually want to use
 
-- ⚡ **Real-time alerts** from multiple property sources
-- 📝 **Application letter generator** in 29 languages
-- 📱 **Multi-channel notifications** (Email, Push, SMS)
-- 🎯 **Smart matching algorithms** with score-based recommendations
-- 📊 **Comprehensive dashboard** with activity tracking
-- 🌍 **Multi-language support** (24 languages)
-- 📋 **Contract analysis** with risk assessment
-- 🗺️ **Neighborhood insights** and property analytics
+What We're Testing
 
-## 🎯 Project Goals
+Core Experiments:
 
-This project is built as a **side project for exploration and learning**, with the aim to:
+⚡ Multi-source property monitoring with instant alerts
 
-1. **Understand the rental market** — Deep dive into user pain points and competitor offerings
-2. **Test innovative features** — Experiment with real-time data and advanced UX patterns
-3. **Deliver real value** — Create features that genuinely improve the rental search experience
-4. **Build a portfolio piece** — Showcase full-stack development, design, and product thinking
+📝 AI application letter generator (29 languages)
 
-## ✨ Current Features
+🎯 Smart matching algorithm with relevance scoring
 
-### Core Functionality
-- ✅ Real-time property monitoring from multiple sources (Funda, Pararius, etc.)
-- ✅ Smart property matching with customizable search profiles
-- ✅ Intelligent notifications (email, push, SMS for Premium users)
-- ✅ Multi-language support (24 languages including Dutch, English, German, Arabic, and more)
-- ✅ Advanced search filters (location, price, features, utilities, availability)
-- ✅ Property detail pages with comprehensive information
-- ✅ Saved properties with folder organization
+📋 Contract analyzer with risk assessment
 
-### Premium Features
-- ✅ **Application Letter Generator** — Personalized letters in 29 languages
-- ✅ **Contract Analyzer** — Lease review with risk assessment (Premium)
-- ✅ **Property Recommendations** — Algorithm-based suggestions
-- ✅ **Match Scoring** — Intelligent algorithm to rank property relevance
+🌍 Full multi-language support (24 languages)
 
-### Dashboard & User Experience
-- ✅ Modern, dark-themed dashboard inspired by ElevenLabs design
-- ✅ Activity feed with real-time updates
-- ✅ Statistics tracking (searches, matches, applications, saved properties)
-- ✅ Quick actions panel
-- ✅ Responsive design (mobile-first)
+📱 Cross-platform notifications (email, push, SMS)
 
-## 🚀 Tech Stack
+vs. Current Platforms:
 
-- **Frontend**: Next.js 15, React 18, TypeScript, TailwindCSS
-- **Backend**: Next.js API Routes, Supabase (PostgreSQL + PostGIS)
-- **Database**: Supabase with Row Level Security (RLS)
-- **Authentication**: Supabase Auth
-- **Letter Generation**: OpenAI API (application letters, contract analysis)
-- **Notifications**: Multi-channel (Email via Resend, Push via Expo, SMS via Twilio)
-- **Deployment**: Vercel (web), Railway (scraper)
-- **Scraping**: Puppeteer, BullMQ, Redis
-- **State Management**: React Server Components + SWR for client data
-- **Animations**: Framer Motion
-- **Smooth Scroll**: Lenis
+More personalized than Funda
 
-## 📱 Roadmap & Future Plans
+Faster alerts than Pararius
 
-### Mobile Apps (Q2 2024)
-- 📱 **iOS App** — Native Swift/SwiftUI app with push notifications
-- 📱 **Android App** — Native Kotlin/Jetpack Compose app
-- 🔔 **Cross-platform notifications** via Expo Push Notifications
-- 📍 **Location-based alerts** using device GPS
-- 💬 **In-app messaging** with landlords
+Smarter filtering than Facebook groups
 
-### Enhanced Features
-- 🔍 **Map view** — Interactive map with property clustering
-- 📸 **Virtual tours** integration
-- 💰 **Price drop alerts** — Track favorite properties
-- 🏘️ **Neighborhood analytics** — Schools, crime rates, transport scores
-- 📊 **Market insights** — Price trends, availability statistics
-- 🤝 **Roommate matching** — Find compatible roommates
-- 📅 **Viewing scheduler** — Book property viewings in-app
-- 💼 **Landlord tools** — For property owners (future expansion)
+Professional tools Uprent.nl doesn't have (yet)
 
-### Competitive Features
-Building features that address gaps in current market offerings:
+🚀 What's Next
+Testing these ideas:
 
-- **vs. Uprent.nl**: Advanced dashboard, letter generation, contract analysis, multi-language support
-- **vs. Funda**: Faster alerts, better filtering, smart recommendations
-- **vs. Pararius**: Real-time monitoring, personalized matching, mobile apps
-- **vs. Kamernet**: Professional application tools, neighborhood insights
-- **vs. Facebook Groups**: Organized search, quality filtering, verified listings
+📱 Native mobile apps (iOS/Android)
 
-### Technical Improvements
-- ⚡ **Performance**: Caching strategies, virtual scrolling, image optimization
-- 🔒 **Security**: Enhanced authentication, data encryption
-- 📈 **Analytics**: User behavior tracking, conversion optimization
-- 🧪 **Testing**: E2E tests with Playwright, unit tests with Vitest
-- 🌐 **Internationalization**: Full i18n support for all features
+🗺️ Interactive map view with clustering
 
-## 🏗️ Project Structure
+🏘️ Neighborhood analytics and insights
 
-```
-uprent-plus/
-├── apps/
-│   ├── web/              # Next.js 15 web application
-│   ├── mobile/           # React Native app (Expo) — Coming soon
-│   └── scraper/          # Property scraping service (Railway)
-├── packages/
-│   ├── database/         # Supabase migrations & types
-│   ├── notifications/    # Multi-channel notification service
-│   ├── ai/               # AI services (OpenAI integrations)
-│   └── ui/               # Shared UI components
-└── docs/                 # Documentation
-```
+💰 Price tracking and market trends
 
-## 🚀 Getting Started
+🤝 Roommate matching algorithm
 
-### Prerequisites
-- Node.js 18+ and pnpm
-- Supabase account (for database and auth)
-- OpenAI API key (for AI features)
-- Vercel account (for deployment)
+🛠️ Built With
+Next.js 15, Supabase, OpenAI, Vercel — Modern stack for rapid experimentation.
 
-### Installation
+💡 Disclaimer
+This is a learning project to explore and test features. Not affiliated with Uprent B.V. Built to understand the market and showcase potential innovations.
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/uprent-plus.git
-cd uprent-plus
-
-# Install dependencies
-pnpm install
-
-# Set up environment variables
-cp .env.example .env.local
-# Fill in your Supabase, OpenAI, and other API keys
-
-# Run migrations
-# Execute SQL files in packages/database/supabase/migrations/
-
-# Start development server
-pnpm dev
-```
-
-### Environment Variables
-
-Create a `.env.local` file with your Supabase, OpenAI, and Stripe API keys.
-
-## 📝 License
-
-MIT License — feel free to use this project for learning and inspiration.
-
-## 🙏 Acknowledgments
-
-- **Uprent.nl** — For the excellent base platform that inspired this extension
-- **OpenAI** — For GPT-4 powering AI features
-- **Supabase** — For the amazing backend infrastructure
-- **Vercel** — For seamless deployment
-
-## 💡 Disclaimer
-
-This is a **demonstration project** built for learning and exploration. It is not officially affiliated with Uprent B.V. or any other rental platform. Built to showcase potential enhancements and understand the rental market better.
-
----
-
-**Built with ❤️ as a side project to explore, learn, and deliver value to the Dutch rental market.**
+An experimental project exploring what rental search could be.
