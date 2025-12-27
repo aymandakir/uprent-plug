@@ -13,13 +13,13 @@
 
 While Uprent.nl provides excellent core rental search functionality, Uprent Plus adds:
 
-- ⚡ **15-second real-time alerts** from 1,500+ sources
-- 🤖 **AI-powered application letters** in 29 languages
+- ⚡ **Real-time alerts** from multiple property sources
+- 📝 **Application letter generator** in 29 languages
 - 📱 **Multi-channel notifications** (Email, Push, SMS)
-- 🎯 **Advanced matching algorithms** with score-based recommendations
+- 🎯 **Smart matching algorithms** with score-based recommendations
 - 📊 **Comprehensive dashboard** with activity tracking
 - 🌍 **Multi-language support** (24 languages)
-- 📝 **Contract analysis** (AI-powered lease review)
+- 📋 **Contract analysis** with risk assessment
 - 🗺️ **Neighborhood insights** and property analytics
 
 ## 🎯 Project Goals
@@ -27,7 +27,7 @@ While Uprent.nl provides excellent core rental search functionality, Uprent Plus
 This project is built as a **side project for exploration and learning**, with the aim to:
 
 1. **Understand the rental market** — Deep dive into user pain points and competitor offerings
-2. **Test innovative features** — Experiment with AI, real-time data, and advanced UX patterns
+2. **Test innovative features** — Experiment with real-time data and advanced UX patterns
 3. **Deliver real value** — Create features that genuinely improve the rental search experience
 4. **Build a portfolio piece** — Showcase full-stack development, design, and product thinking
 
@@ -35,17 +35,17 @@ This project is built as a **side project for exploration and learning**, with t
 
 ### Core Functionality
 - ✅ Real-time property monitoring from multiple sources (Funda, Pararius, etc.)
-- ✅ AI-powered property matching with customizable search profiles
+- ✅ Smart property matching with customizable search profiles
 - ✅ Intelligent notifications (email, push, SMS for Premium users)
 - ✅ Multi-language support (24 languages including Dutch, English, German, Arabic, and more)
 - ✅ Advanced search filters (location, price, features, utilities, availability)
 - ✅ Property detail pages with comprehensive information
 - ✅ Saved properties with folder organization
 
-### AI Features
-- ✅ **Application Letter Generator** — Personalized letters in 29 languages using GPT-4
-- ✅ **Contract Analyzer** — AI-powered lease review with risk assessment (Premium)
-- ✅ **Property Recommendations** — Machine learning-based suggestions
+### Premium Features
+- ✅ **Application Letter Generator** — Personalized letters in 29 languages
+- ✅ **Contract Analyzer** — Lease review with risk assessment (Premium)
+- ✅ **Property Recommendations** — Algorithm-based suggestions
 - ✅ **Match Scoring** — Intelligent algorithm to rank property relevance
 
 ### Dashboard & User Experience
@@ -61,7 +61,7 @@ This project is built as a **side project for exploration and learning**, with t
 - **Backend**: Next.js API Routes, Supabase (PostgreSQL + PostGIS)
 - **Database**: Supabase with Row Level Security (RLS)
 - **Authentication**: Supabase Auth
-- **AI**: OpenAI GPT-4 (letter generation, contract analysis)
+- **Letter Generation**: OpenAI API (application letters, contract analysis)
 - **Notifications**: Multi-channel (Email via Resend, Push via Expo, SMS via Twilio)
 - **Deployment**: Vercel (web), Railway (scraper)
 - **Scraping**: Puppeteer, BullMQ, Redis
@@ -91,8 +91,8 @@ This project is built as a **side project for exploration and learning**, with t
 ### Competitive Features
 Building features that address gaps in current market offerings:
 
-- **vs. Uprent.nl**: Advanced dashboard, AI letters, contract analysis, multi-language support
-- **vs. Funda**: Faster alerts, better filtering, AI recommendations
+- **vs. Uprent.nl**: Advanced dashboard, letter generation, contract analysis, multi-language support
+- **vs. Funda**: Faster alerts, better filtering, smart recommendations
 - **vs. Pararius**: Real-time monitoring, personalized matching, mobile apps
 - **vs. Kamernet**: Professional application tools, neighborhood insights
 - **vs. Facebook Groups**: Organized search, quality filtering, verified listings
@@ -151,7 +151,7 @@ pnpm dev
 
 ### Environment Variables
 
-See `ENV_VARIABLES.md` for a complete list of required environment variables.
+Create a `.env.local` file with your Supabase, OpenAI, and Stripe API keys.
 
 ## 📝 License
 

@@ -1,231 +1,60 @@
-# Project Context: RentFusion / Uprent Plug
-## AI-Powered Property Scraper & Matching Platform
+# Uprent Plus - Project Context
 
 ## Tech Stack
 - **Monorepo**: Turborepo (pnpm workspaces)
 - **Frontend**: Next.js 14.2.35, TypeScript 5.9, React 18.3.1, Tailwind CSS
 - **Backend**: Next.js API routes, TypeScript
 - **Database**: Supabase (PostgreSQL with PostGIS)
-- **Scraper Infrastructure**: Node.js, Puppeteer, BullMQ, Redis (Railway deployment)
 - **Mobile**: React Native with Expo (EAS)
 - **Deployment**: Vercel (web app), Railway (scraper)
 - **Payments**: Stripe (subscriptions)
-- **AI**: OpenAI GPT-4 (letter generation)
 - **Notifications**: Multi-channel (email, push, SMS, Telegram)
 
 ## Project Overview
-Building an AI-powered property scraper that:
-1. Scrapes Funda, Pararius, and other Dutch real estate sites for rental properties
-2. Stores properties in Supabase database with full schema
-3. Automatically matches properties against user search profiles
-4. Sends notifications when matches are found (email, push, SMS, Telegram)
-5. Generates personalized application letters using GPT-4
-6. Provides web dashboard and mobile apps for users
-
-## Current Status
-
-### ✅ Completed
-- Database schema migration file created (`packages/database/supabase/migrations/20250101000000_init_schema.sql`)
-- Funda scraper implemented with property matching logic (`apps/scraper/src/scrapers/funda.ts`)
-- Pararius scraper skeleton exists (`apps/scraper/src/scrapers/pararius.ts`)
-- Base scraper class with save/update logic (`apps/scraper/src/utils/base-scraper.ts`)
-- Property matching service (`packages/notifications/src/matcher.ts`)
-- Health endpoint exists at `/api/health`
-- Property matching automatically triggers on property save
-- Next.js upgraded to 14.2.35 (security fix)
-- Documentation created:
-  - `CRITICAL_TASKS.md` - Week 1 action plan
-  - `ENV_VARIABLES.md` - Complete environment variables checklist
-  - `DEPLOYMENT.md` - Production deployment guide
-
-### ⏳ PENDING
-- Database migration needs to be run in Supabase production
-- Environment variables need verification in Vercel and Railway
-- Scraper needs end-to-end testing (Funda → DB → Match → Notify)
-- Railway deployment needs configuration
-- Redis service needs to be added to Railway
-- User authentication flow needs implementation
-- Payment flow needs end-to-end testing
+Property rental platform that:
+1. Scrapes property listings from Dutch real estate sites
+2. Stores properties in Supabase database
+3. Matches properties against user search profiles
+4. Sends notifications when matches are found
+5. Provides web dashboard and mobile apps for users
 
 ## File Structure
 ```
 rentfusion/
-├── .cursorrules                    # This file - AI context
-├── CRITICAL_TASKS.md              # Step-by-step week 1 action plan
-├── ENV_VARIABLES.md               # Complete environment variables checklist
-├── DEPLOYMENT.md                   # Production deployment guide
 ├── apps/
-│   ├── web/                        # Next.js 14 web app (Vercel)
-│   │   ├── app/
-│   │   │   ├── api/
-│   │   │   │   ├── health/         # Health check endpoint
-│   │   │   │   ├── ai/generate-letter/
-│   │   │   │   ├── stripe/         # Stripe webhooks & checkout
-│   │   │   │   └── cron/           # Scheduled jobs
-│   │   │   ├── (auth)/             # Login/register pages
-│   │   │   ├── (dashboard)/       # Protected dashboard routes
-│   │   │   └── (marketing)/        # Public marketing pages
-│   │   └── components/
 │   ├── mobile/                     # React Native app (Expo)
-│   └── scraper/                    # Property scraper (Railway)
-│       ├── src/
-│       │   ├── scrapers/
-│       │   │   ├── funda.ts        # Funda scraper (implemented)
-│       │   │   └── pararius.ts     # Pararius scraper (skeleton)
-│       │   ├── utils/
-│       │   │   └── base-scraper.ts # Base scraper class
-│       │   ├── index.ts            # BullMQ worker
-│       │   └── run-all.ts          # Run all scrapers
-│       └── package.json
+│   ├── mobile-standalone/          # Standalone mobile deployment
+│   └── uprent-web/                 # Alternative web build
 └── packages/
-    ├── ai/                         # OpenAI GPT-4 integration
     ├── database/                   # Supabase client & types
-    │   └── supabase/migrations/    # Database migrations
-    ├── notifications/              # Multi-channel notifications
-    │   └── src/matcher.ts          # Property matching logic
     └── ui/                         # Shared UI components
 ```
 
-## Active Tasks (from CRITICAL_TASKS.md)
-
-### Task 1: Verify Deployments Are Live
-- Check Vercel deployment succeeded
-- Visit app URL and confirm landing page loads
-- Check Railway scraper is running (check logs)
-- Test health endpoint: `https://your-app.vercel.app/api/health`
-
-### Task 2: Configure Production Database
-- Run database migration in Supabase SQL Editor
-- Verify tables were created (users, properties, search_profiles, etc.)
-- Verify Row Level Security (RLS) is enabled
-- Test database connection from health endpoint
-
-### Task 3: Get ONE Scraper Working End-to-End
-- Set up environment variables in Railway
-- Add Redis service in Railway
-- Test Funda scraper locally first
-- Verify data in Supabase
-- Test end-to-end flow: Scrape → Save → Match → Notify
-- Deploy scraper to Railway
-
-## Coding Preferences & Requirements
+## Coding Preferences
 
 ### Code Style
 - Use TypeScript strict mode
 - Prefer async/await over promises
 - Use functional components for React
 - Keep functions small and single-purpose
-- Add error handling for all external calls (API, database, scraper)
+- Add error handling for all external calls
 - Use descriptive variable names
-- Follow existing code patterns in the codebase
+- Follow existing code patterns
 
 ### Database Operations
-- Always use Supabase client (`supabase` or `supabaseAdmin`) for database operations
-- Use `supabaseAdmin` (service role key) for scraper/admin operations
-- Use `supabase` (anon key) for user-facing operations
+- Always use Supabase client for database operations
+- Use service role key for admin operations only
 - Add proper error handling for database operations
 - Log database errors with context
-- Use prepared statements (Supabase handles this automatically)
-
-### Scraper Requirements
-- Implement rate limiting to avoid being blocked (use `randomDelay()`)
-- Add retry logic with exponential backoff (use `retryOperation()`)
-- Log all scraping activities with timestamps
-- Use Railway private networking for database connections when possible
-- Handle Puppeteer errors gracefully (timeouts, network issues)
-- Clean up browser instances properly (`cleanup()` method)
 
 ### Environment Variables
 - Never hard-code credentials or URLs
-- Use Railway variable referencing: `${{Service.VARIABLE}}` for inter-service communication
-- Verify all required variables before deployment
-- Reference `ENV_VARIABLES.md` for complete list
 - Use `NEXT_PUBLIC_*` prefix for client-side variables in Next.js
 - Keep service role keys server-side only
-
-### Deployment Best Practices
-- Test locally before deploying to Railway/Vercel
-- Use Railway private domains for inter-service communication
-- Implement health checks for all services
-- Add logging for debugging production issues
-- Use environment-specific configurations
-- Verify all environment variables are set before deployment
 
 ### Error Handling
 - Always wrap external API calls in try-catch
 - Log errors with context (user ID, property ID, etc.)
 - Return meaningful error messages to users
-- Use proper HTTP status codes (200, 400, 401, 403, 500, etc.)
+- Use proper HTTP status codes
 - Don't expose sensitive information in error messages
-
-## Next Actions for Cursor AI
-
-### Immediate Priority (Complete in Order):
-1. **Review CRITICAL_TASKS.md** and identify any missing implementation details
-2. **Verify environment variables** against ENV_VARIABLES.md checklist
-3. **Create database migration runner** if not exists:
-   - Read migration file from `packages/database/supabase/migrations/`
-   - Connect to Supabase with proper credentials
-   - Execute migration with error handling
-   - Verify tables were created successfully
-4. **Test scraper locally**:
-   - Run Funda scraper: `cd apps/scraper && pnpm scrape:funda`
-   - Verify properties are saved to database
-   - Confirm matching logic triggers
-   - Check notification system works
-5. **Prepare Railway deployment**:
-   - Verify Dockerfile exists (or create if missing)
-   - Set up environment variables
-   - Configure health check endpoint
-   - Add proper logging
-
-### When Modifying Code:
-- Reference `CRITICAL_TASKS.md` for implementation requirements
-- Check `ENV_VARIABLES.md` when adding new integrations
-- Test database operations locally before production
-- Add comments for complex scraping logic
-- Update documentation files if adding new features
-- Follow existing patterns in the codebase
-
-### Success Criteria:
-- Scraper runs without errors
-- Properties appear in Supabase database
-- Matches are correctly identified (check `property_matches` table)
-- Notifications are sent (check `notifications` table)
-- Health endpoint returns 200 OK with all checks passing
-- All services deployed and communicating
-
-## Questions to Ask Before Coding:
-1. "Have I reviewed CRITICAL_TASKS.md for this specific task?"
-2. "Are all required environment variables set?"
-3. "Have I added proper error handling?"
-4. "Have I tested this locally first?"
-5. "Does this follow the established patterns in the codebase?"
-6. "Am I using the correct Supabase client (supabase vs supabaseAdmin)?"
-
-## When Stuck:
-- Reference the documentation files (`CRITICAL_TASKS.md`, `ENV_VARIABLES.md`, `DEPLOYMENT.md`)
-- Check Railway logs for deployment issues
-- Verify Supabase connection strings are correct
-- Test each component (scraper, database, matching) independently
-- Use health endpoints to verify service status
-- Check Supabase dashboard for database errors
-- Review existing code patterns for similar functionality
-
-## Key Files to Reference:
-- `CRITICAL_TASKS.md` - Step-by-step action plan
-- `ENV_VARIABLES.md` - Environment variables checklist
-- `packages/database/supabase/migrations/20250101000000_init_schema.sql` - Database schema
-- `apps/scraper/src/utils/base-scraper.ts` - Base scraper implementation
-- `packages/notifications/src/matcher.ts` - Property matching logic
-- `apps/web/app/api/health/route.ts` - Health check endpoint
-
-## Important Notes:
-- The project uses a monorepo structure with Turborepo
-- All packages use workspace protocol (`workspace:*`) for internal dependencies
-- Database migrations are in `packages/database/supabase/migrations/`
-- Scraper uses Puppeteer for browser automation
-- Property matching happens automatically when properties are saved
-- Notifications are sent via the `@rentfusion/notifications` package
-- Next.js 14.2.35 is the minimum version (security requirement)
-
